@@ -1,21 +1,23 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
   NavController,
   ModalController,
   ActionSheetController
-} from "@ionic/angular";
+} from '@ionic/angular';
 import { EventsService } from "../../events.service";
 import { Event } from "../../event.model";
 import { JoinEventComponent } from "./../../../joined-events/join-event/join-event.component";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: "app-event-detail",
   templateUrl: "./event-detail.page.html",
   styleUrls: ["./event-detail.page.scss"]
 })
-export class EventDetailPage implements OnInit {
+export class EventDetailPage implements OnInit, OnDestroy {
   event: Event;
+  private eventSub: Subscription;
   constructor(
     private navCtrl: NavController,
     private route: ActivatedRoute,
@@ -30,30 +32,37 @@ export class EventDetailPage implements OnInit {
         this.navCtrl.navigateBack('/events/tabs/discover');
         return;
       }
-      this.event = this.eventsService.getEvent(paramMap.get('eventId'));
+      this.eventSub = this.eventsService.getEvent(paramMap.get('eventId')).subscribe(event => {
+        this.event = event;
+      });
     });
+  }
+  ngOnDestroy() {
+    if(this.eventSub) {
+      this.eventSub.unsubscribe();
+    }
   }
 
   onJoinEvent() {
     this.actionsheetCtrl
       .create({
-        header: "Choose an Action",
+        header: 'Choose an Action',
         buttons: [
           {
-            text: "Going",
+            text: 'Going',
             handler: () => {
-              this.openJoinEventModal("going");
+              this.openJoinEventModal('going');
             }
           },
           {
-            text: "Interested",
+            text: 'Interested',
             handler: () => {
-              this.openJoinEventModal("interested");
+              this.openJoinEventModal('interested');
             }
           },
           {
-            text: "Cancel",
-            role: "cancel"
+            text: 'Cancel',
+            role: 'cancel'
           }
         ]
       })
@@ -61,12 +70,12 @@ export class EventDetailPage implements OnInit {
         actionSheetEl.present();
       });
   }
-  openJoinEventModal(mode: "going" | "interested") {
+  openJoinEventModal(mode: 'going' | 'interested') {
     console.log(mode);
     this.modalCtrl
       .create({
         component: JoinEventComponent,
-        componentProps: { selectedEvent: this.event }
+        componentProps: { selectedEvent: this.event, selectedMode: mode }
       })
       .then(modalEl => {
         modalEl.present();
@@ -74,8 +83,8 @@ export class EventDetailPage implements OnInit {
       })
       .then(resaultData => {
         console.log(resaultData.data, resaultData.role);
-        if (resaultData.role === "confirm") {
-          console.log("Joined");
+        if (resaultData.role === 'confirm') {
+          console.log('Joined');
         }
       });
   }

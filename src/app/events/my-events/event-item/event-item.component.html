@@ -1,0 +1,12 @@
+<ion-item [routerLink]="['/','events','tabs','my-events',event.id]">
+  <ion-thumbnail slot="start">
+    <ion-img [src]="event.imgUrl"></ion-img>
+  </ion-thumbnail>
+  <ion-label>
+    <h1>{{event.name}}</h1>
+    <div>
+      <ion-icon name="calendar"></ion-icon>
+      <ion-text color="primary" padding>{{event.date | date}}</ion-text>
+    </div>
+  </ion-label>
+</ion-item>

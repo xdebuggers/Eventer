@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EventsService } from './../../events.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -11,7 +12,10 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class NewEventPage implements OnInit {
 
   form: FormGroup;
-  constructor() { }
+  constructor(
+    private eventsService: EventsService,
+    private router: Router
+    ) { }
 
   ngOnInit() { 
     this.form = new FormGroup({
@@ -39,10 +43,18 @@ export class NewEventPage implements OnInit {
   }
 
   onCreateEvent() {
-    if(!this.form.valid) {
+    if (!this.form.valid) {
       return;
     }
-    console.log(this.form);
+    let s = (this.form.value.date).toString() + ' ' + (this.form.value.time).toString();
+    this.eventsService.addEvent(
+      this.form.value.name,
+      this.form.value.desc,
+      this.form.value.capacity,
+      new Date(s)
+      );
+    this.form.reset();
+    this.router.navigate(['/events/tabs/my-events']);
   }
 
 

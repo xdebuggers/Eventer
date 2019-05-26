@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Event } from '../../event.model';
 import { ActivatedRoute } from '@angular/router';
 import { EventsService } from '../../events.service';
 import { NavController } from '@ionic/angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-edit-event',
   templateUrl: './edit-event.page.html',
   styleUrls: ['./edit-event.page.scss'],
 })
-export class EditEventPage implements OnInit {
+export class EditEventPage implements OnInit, OnDestroy {
 
   event: Event;
   form: FormGroup;
+  private eventSub: Subscription;
 
   constructor(
     private route: ActivatedRoute, 
@@ -26,18 +28,24 @@ export class EditEventPage implements OnInit {
         this.navCtrl.navigateBack('/events/tabs/my-events');
         return;
       }
-      this.event = this.eventsService.getEvent(paramMap.get('eventId'));
-      this.form = new FormGroup({name: new FormControl(this.event.name, {
-        updateOn: 'blur',
-        validators: [Validators.required]
-      }),
-      desc: new FormControl (this.event.desc, {
+      this.eventSub = this.eventsService.getEvent(paramMap.get('eventId')).subscribe(event => {
+        this.event = event;
+        this.form = new FormGroup({name: new FormControl(this.event.name, {
           updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(255)]
-        })
-
+          validators: [Validators.required]
+        }),
+        desc: new FormControl (this.event.desc, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.maxLength(255)]
+          })
+        });
       });
     });
+  }
+  ngOnDestroy() {
+    if (this.eventSub) {
+      this.eventSub.unsubscribe();
+    }
   }
 
   onUpdateEvent() {

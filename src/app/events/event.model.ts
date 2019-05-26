@@ -8,6 +8,7 @@ export class Event {
         public capacity: number,
         public date: Date,
         public goingCount: number,
-        public interestedCount: number 
+        public interestedCount: number,
+        public userId: string
         ) {}
     }

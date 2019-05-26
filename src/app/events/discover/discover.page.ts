@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EventsService } from '../events.service';
 import { Event} from '../event.model';
-import { from } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { SegmentChangeEventDetail } from '@ionic/core';
 
 @Component({
@@ -9,15 +9,24 @@ import { SegmentChangeEventDetail } from '@ionic/core';
   templateUrl: './discover.page.html',
   styleUrls: ['./discover.page.scss'],
 })
-export class DiscoverPage implements OnInit {
+export class DiscoverPage implements OnInit, OnDestroy{
 
   loadedEvents: Event[];
+  private eventsSub: Subscription;
 
   constructor(private eventservices: EventsService) { }
 
   ngOnInit() {
 
-    this.loadedEvents = this.eventservices.events;
+    this.eventsSub = this.eventservices.events.subscribe(events => {
+      this.loadedEvents = events;
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.eventsSub) {
+      this.eventsSub.unsubscribe();
+    }  
   }
   onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {
     console.log(event.detail);
@@ -25,3 +34,4 @@ export class DiscoverPage implements OnInit {
   }
 
 }
+;

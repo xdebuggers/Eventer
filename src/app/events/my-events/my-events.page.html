@@ -17,14 +17,7 @@
         <ion-col size="12" size-sm="8" offset-sm="2">
           <ion-list>
             <ion-item-sliding *ngFor="let myevent of myEvents" #slidingItem>
-                <ion-item [routerLink]="['/','events','tabs','my-events',myevent.id]">
-                  <ion-thumbnail slot="start">
-                    <ion-img [src]="myevent.imgUrl"></ion-img>
-                  </ion-thumbnail>
-                  <ion-label>
-                    <h1>{{myevent.name}}</h1>
-                  </ion-label>
-                </ion-item>
+                  <app-event-item [event]="myevent"></app-event-item>
                 <ion-item-options>
                   <ion-item-option color="secondary" (click)="onEdit(myevent.id, slidingItem)">
                     <ion-icon name="create" slot="icon-only"></ion-icon>

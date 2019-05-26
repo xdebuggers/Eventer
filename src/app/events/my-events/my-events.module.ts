@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { MyEventsPage } from './my-events.page';
+import { EventItemComponent } from './event-item/event-item.component';
 
 const routes: Routes = [
   {
@@ -16,11 +17,12 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    CommonModule,
+  
+  CommonModule,
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [MyEventsPage]
+  declarations: [MyEventsPage, EventItemComponent]
 })
 export class MyEventsPageModule {}

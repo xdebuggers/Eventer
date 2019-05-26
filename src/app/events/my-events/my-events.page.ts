@@ -1,21 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EventsService } from '../events.service';
 import { Event } from './../event.model';
 import { IonItemSliding } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-my-events',
   templateUrl: './my-events.page.html',
   styleUrls: ['./my-events.page.scss'],
 })
-export class MyEventsPage implements OnInit {
+export class MyEventsPage implements OnInit , OnDestroy{
   myEvents: Event[];
+  eventsSub: Subscription;
   constructor(private eventsService: EventsService, private router: Router) { }
 
   ngOnInit() {
-    this.myEvents = this.eventsService.events;
+    this.eventsSub = this.eventsService.events.subscribe(events => {
+      this.myEvents = events;
+    });
   }
+
+  ngOnDestroy() {
+    if (this.eventsSub) {
+      this.eventsSub.unsubscribe();
+    }
+  }
+
   onEdit(eventId: string, slidingItem: IonItemSliding) {
     slidingItem.close();
     this.router.navigate(['/', 'events', 'tabs', 'my-events', 'edit', eventId]);
