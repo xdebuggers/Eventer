@@ -2,9 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-
 import { IonicModule } from '@ionic/angular';
-
+import { JoinEventComponent } from './../../../joined-events/join-event/join-event.component';
 import { EventDetailPage } from './event-detail.page';
 
 const routes: Routes = [
@@ -16,11 +15,12 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    CommonModule,
+  CommonModule,
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [EventDetailPage]
+  declarations: [EventDetailPage, JoinEventComponent],
+  entryComponents: [JoinEventComponent]
 })
 export class EventDetailPageModule {}
