@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import {Event} from './event.model';
 import { LoginService } from './../login/login.service';
 import { BehaviorSubject } from 'rxjs';
-import {take, map} from 'rxjs/operators';
+import {take, map, tap, delay} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,7 @@ export class EventsService {
     'A gather for the team',
     'https://pbs.twimg.com/media/Du5-syqW0AEqmJV.jpg',
     20,
-    new Date('2020-12-01 17:22'),0,0,'abc'),
+    new Date('2020-12-01 17:22'),0,0,'a'),
 
     new Event('e3',
     'Iftar with friends',
@@ -33,16 +33,15 @@ export class EventsService {
 
   ]);
 
-  get events(){
+  get events() {
     return this._events.asObservable();
 
   }
 
   getEvent(id: string) {
-    return this.events.pipe(take(1),map(events => {
+    return this.events.pipe(take(1), map(events => {
       return {...events.find (p => p.id === id)};
     }));
-    
   }
 
   addEvent(
@@ -59,10 +58,31 @@ export class EventsService {
           0,
           0,
           this.loginService.userId);
-          this.events.pipe(take(1)).subscribe(events => {
-            this._events.next(events.concat(newEvent));
-          });
-          
+          // need to look again!!!!!
+          return this.events.pipe(take(1), delay(1000), tap((events) => {
+              this._events.next(events.concat(newEvent));
+          }));
+  }
+  updateEvent(eventId: string, name: string, desc: string) {
+    return this.events.pipe(
+      take(1),
+      delay(1000),
+      tap(events => {
+      const updatedEventIndex = events.findIndex(ev => ev.id === eventId);
+      const updatedEvents = [...events];
+      const oldEvent = updatedEvents[updatedEventIndex];
+      updatedEvents[updatedEventIndex] = new Event(
+        oldEvent.id, 
+        name, 
+        desc, 
+        oldEvent.imgUrl, 
+        oldEvent.capacity, 
+        oldEvent.date, 
+        oldEvent.goingCount, 
+        oldEvent.interestedCount, 
+        oldEvent.userId);
+      this._events.next(updatedEvents);
+    }));
   }
 
   constructor(private loginService: LoginService) { }

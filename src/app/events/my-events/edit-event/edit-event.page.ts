@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Event } from '../../event.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EventsService } from '../../events.service';
-import { NavController } from '@ionic/angular';
+import { NavController, LoadingController } from '@ionic/angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -18,9 +18,11 @@ export class EditEventPage implements OnInit, OnDestroy {
   private eventSub: Subscription;
 
   constructor(
-    private route: ActivatedRoute, 
-    private eventsService: EventsService, 
-    private navCtrl: NavController) { }
+    private route: ActivatedRoute,
+    private eventsService: EventsService,
+    private navCtrl: NavController,
+    private router: Router,
+    private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(paramMap => {
@@ -49,10 +51,24 @@ export class EditEventPage implements OnInit, OnDestroy {
   }
 
   onUpdateEvent() {
-    if(!this.form.valid) {
+    if (!this.form.valid) {
       return;
     }
-    console.log(this.form);
+    this.loadingCtrl.create({
+      message: 'Updating Event...'
+    }).then(loadingEl => {
+      loadingEl.present();
+      this.eventsService.updateEvent(
+        this.event.id,
+        this.form.value.name,
+        this.form.value.desc
+        ).subscribe(() => {
+          loadingEl.dismiss();
+          this.form.reset();
+          this.router.navigate(['/events/tabs/my-events']);
+        });
+    });
+    
   }
 
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EventsService } from './../../events.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 
 
 @Component({
@@ -14,7 +15,8 @@ export class NewEventPage implements OnInit {
   form: FormGroup;
   constructor(
     private eventsService: EventsService,
-    private router: Router
+    private router: Router,
+    private loadingCtrl: LoadingController
     ) { }
 
   ngOnInit() { 
@@ -46,15 +48,25 @@ export class NewEventPage implements OnInit {
     if (!this.form.valid) {
       return;
     }
-    let s = (this.form.value.date).toString() + ' ' + (this.form.value.time).toString();
-    this.eventsService.addEvent(
+    this.loadingCtrl.create({
+      message: 'Creating Event...'
+    }).then(loadingEl => {
+      loadingEl.present();
+
+      let s = (this.form.value.date).toString() + ' ' + (this.form.value.time).toString();
+      this.eventsService.addEvent(
       this.form.value.name,
       this.form.value.desc,
       this.form.value.capacity,
       new Date(s)
-      );
-    this.form.reset();
-    this.router.navigate(['/events/tabs/my-events']);
+      ).subscribe(() => {
+        loadingEl.dismiss();
+        this.form.reset();
+        this.router.navigate(['/events/tabs/my-events']);
+      });
+    });
+    
+    
   }
 
 
