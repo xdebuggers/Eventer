@@ -12,9 +12,12 @@ export class NewEventPage implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-
-    
+  ngOnInit() { 
   }
+
+  onCreateEvent() {
+    console.log('created');
+  }
+
 
 }
