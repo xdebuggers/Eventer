@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Event } from 'src/app/events/event.model';
 import { ModalController } from '@ionic/angular';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-join-event',
@@ -10,15 +11,38 @@ import { ModalController } from '@ionic/angular';
 export class JoinEventComponent implements OnInit {
 
   @Input() selectedEvent: Event;
+  @Input() selectedMode: 'going' | 'interested';
+  @ViewChild('f') form: NgForm;
   constructor(private modalCtrl: ModalController) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+
+  }
 
   onCancel() {
     this.modalCtrl.dismiss(null, 'cancel');
   }
 
   onJoinEvent() {
-    this.modalCtrl.dismiss({message: 'this is a test message'}, 'confirm');
+    if (!this.form.valid) {
+      return;
+    }
+    if (this.selectedMode === 'going'){
+      this.selectedEvent.goingCount++;
+      this.modalCtrl.dismiss({joinData: {
+        firstName: this.form.value['first-name'],
+        lastName: this.form.value['last-name'],
+        comment: this.form.value.comment
+      } }, 'confirm');
+
+    } else {
+      this.selectedEvent.interestedCount++;
+      this.modalCtrl.dismiss({joinData: {
+        firstName: this.form.value['first-name'],
+        lastName: this.form.value['last-name'],
+        comment: this.form.value.comment
+      } }, 'confirm');
+    }
   }
 }

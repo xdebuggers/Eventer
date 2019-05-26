@@ -26,11 +26,11 @@ export class EventDetailPage implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(paramMap => {
-      if (!paramMap.has("eventId")) {
-        this.navCtrl.navigateBack("/events/tabs/discover");
+      if (!paramMap.has('eventId')) {
+        this.navCtrl.navigateBack('/events/tabs/discover');
         return;
       }
-      this.event = this.eventsService.getEvent(paramMap.get("eventId"));
+      this.event = this.eventsService.getEvent(paramMap.get('eventId'));
     });
   }
 

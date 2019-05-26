@@ -5,5 +5,9 @@ export class Event {
         public name: string,
         public desc: string,
         public imgUrl: string,
+        public capacity: number,
+        public date: Date,
+        public goingCount: number,
+        public interestedCount: number 
         ) {}
     }
