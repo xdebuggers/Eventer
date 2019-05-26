@@ -1,0 +1,13 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/events/tabs/discover"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{event.name}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+  <ion-button color="primary" margin (click)="onJoinEvent()">Join</ion-button>
+</ion-content>
