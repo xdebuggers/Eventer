@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { JoinedEventsService } from './joined-events.service';
+import { JoindEvent } from './joined-event.model';
+import { IonItemSliding } from '@ionic/angular';
 
 @Component({
   selector: 'app-joined-events',
@@ -7,9 +10,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class JoinedEventsPage implements OnInit {
 
-  constructor() { }
+  loadedJoinedEvents: JoindEvent[];
+  constructor(private joinedEventsService: JoinedEventsService) { }
 
   ngOnInit() {
+    this.loadedJoinedEvents = this.joinedEventsService.joinedEvents;
+  }
+  onUnjoinEvent(joinedEvenetId: string, slidingJevent: IonItemSliding) {
+    slidingJevent.close();
+
   }
 
 }
