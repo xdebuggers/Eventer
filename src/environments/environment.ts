@@ -5,13 +5,13 @@
 export const environment = {
   production: false,
   firebaseConfig: {
-    apiKey: "AIzaSyDIIOB2nVGQ0c1NK3lHBO7CSlNe7-GpE1g",
-    authDomain: "eventer-c5326.firebaseapp.com",
-    databaseURL: "https://eventer-c5326.firebaseio.com",
-    projectId: "eventer-c5326",
-    storageBucket: "eventer-c5326.appspot.com",
-    messagingSenderId: "765967828577",
-    appId: "1:765967828577:web:6afb62e2cf4922b9"
+    apiKey: "AIzaSyDxCYxfWQnfNeIzdXoiyLwXyOwPF_hQNSk",
+    authDomain: "eventer-d9d8e.firebaseapp.com",
+    databaseURL: "https://eventer-d9d8e.firebaseio.com",
+    projectId: "eventer-d9d8e",
+    storageBucket: "eventer-d9d8e.appspot.com",
+    messagingSenderId: "1013953358046",
+    appId: "1:1013953358046:web:29b5560e903ab0d6"
   }
 };
 
