@@ -1,24 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { JoinedEventsService } from './joined-events.service';
 import { JoindEvent } from './joined-event.model';
-import { IonItemSliding } from '@ionic/angular';
+import { IonItemSliding, LoadingController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-joined-events',
   templateUrl: './joined-events.page.html',
   styleUrls: ['./joined-events.page.scss'],
 })
-export class JoinedEventsPage implements OnInit {
+export class JoinedEventsPage implements OnInit, OnDestroy {
 
   loadedJoinedEvents: JoindEvent[];
-  constructor(private joinedEventsService: JoinedEventsService) { }
+  private joinedEventsSub: Subscription;
+  constructor(private joinedEventsService: JoinedEventsService, private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
-    this.loadedJoinedEvents = this.joinedEventsService.joinedEvents;
+    this.joinedEventsSub = this.joinedEventsService.joinedEvents.subscribe(joinedEvents => {
+      this.loadedJoinedEvents = joinedEvents;
+    });
   }
   onUnjoinEvent(joinedEvenetId: string, slidingJevent: IonItemSliding) {
     slidingJevent.close();
+    this.loadingCtrl.create({
+      message: 'Caneling your joined event...'
+    }).then(loadingEl => {
+      loadingEl.present();
+      this.joinedEventsService.cancelJoinEvent(joinedEvenetId).subscribe(() => {
+        loadingEl.dismiss();
+      });
+    })
+    
 
+  }
+  ngOnDestroy() {
+    if (this.joinedEventsSub) {
+      this.joinedEventsSub.unsubscribe();
+    }
   }
 
 }

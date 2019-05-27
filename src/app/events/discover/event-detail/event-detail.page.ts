@@ -3,12 +3,15 @@ import { ActivatedRoute } from "@angular/router";
 import {
   NavController,
   ModalController,
-  ActionSheetController
+  ActionSheetController,
+  LoadingController
 } from '@ionic/angular';
-import { EventsService } from "../../events.service";
-import { Event } from "../../event.model";
-import { JoinEventComponent } from "./../../../joined-events/join-event/join-event.component";
+import { EventsService } from '../../events.service';
+import { Event } from '../../event.model';
+import { JoinEventComponent } from './../../../joined-events/join-event/join-event.component';
 import { Subscription } from 'rxjs';
+import { JoinedEventsService } from './../../../joined-events/joined-events.service';
+import { LoginService } from './../../../login/login.service';
 
 @Component({
   selector: "app-event-detail",
@@ -17,13 +20,17 @@ import { Subscription } from 'rxjs';
 })
 export class EventDetailPage implements OnInit, OnDestroy {
   event: Event;
+  isJoinable = false;
   private eventSub: Subscription;
   constructor(
     private navCtrl: NavController,
     private route: ActivatedRoute,
     private eventsService: EventsService,
     private modalCtrl: ModalController,
-    private actionsheetCtrl: ActionSheetController
+    private actionsheetCtrl: ActionSheetController,
+    private joinedEventsService: JoinedEventsService,
+    private loadingCtrl: LoadingController,
+    private loginService: LoginService
   ) {}
 
   ngOnInit() {
@@ -34,6 +41,7 @@ export class EventDetailPage implements OnInit, OnDestroy {
       }
       this.eventSub = this.eventsService.getEvent(paramMap.get('eventId')).subscribe(event => {
         this.event = event;
+        this.isJoinable = event.userId !== this.loginService.userId;
       });
     });
   }
@@ -84,7 +92,25 @@ export class EventDetailPage implements OnInit, OnDestroy {
       .then(resaultData => {
         console.log(resaultData.data, resaultData.role);
         if (resaultData.role === 'confirm') {
-          console.log('Joined');
+          this.loadingCtrl.create({
+            message: 'Joining Event...'
+          }).then(loadingEl => {
+            loadingEl.present();
+            const data = resaultData.data.joinData;
+            this.joinedEventsService.joinEvent(
+            this.event.id,
+            this.event.name,
+            this.event.imgUrl,
+            data.firstName,
+            data.lastName,
+            data.comment,
+            data.type
+            ).subscribe(() => {
+              loadingEl.dismiss();
+            });
+
+          });
+          
         }
       });
   }

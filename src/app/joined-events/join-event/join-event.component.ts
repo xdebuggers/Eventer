@@ -33,7 +33,8 @@ export class JoinEventComponent implements OnInit {
       this.modalCtrl.dismiss({joinData: {
         firstName: this.form.value['first-name'],
         lastName: this.form.value['last-name'],
-        comment: this.form.value.comment
+        comment: this.form.value.comment,
+        type: 'Going'
       } }, 'confirm');
 
     } else {
@@ -41,7 +42,8 @@ export class JoinEventComponent implements OnInit {
       this.modalCtrl.dismiss({joinData: {
         firstName: this.form.value['first-name'],
         lastName: this.form.value['last-name'],
-        comment: this.form.value.comment
+        comment: this.form.value.comment,
+        type: 'Interested'
       } }, 'confirm');
     }
   }

@@ -4,7 +4,11 @@ export class JoindEvent {
         public eventId: string,
         public userId: string,
         public eventName: string,
-        public membersCount: number
+        public eventImg: string,
+        public type: string,
+        public firsName: string,
+        public lastName: string,
+        public comment: string
     ) {
 
     }
