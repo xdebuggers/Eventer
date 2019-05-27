@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginGuard } from './login/login.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'events', pathMatch: 'full' },
+  { path: '', redirectTo: 'admin', pathMatch: 'full' },
   { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
   {
     path: 'events',
@@ -15,6 +15,8 @@ const routes: Routes = [
     loadChildren: './joined-events/joined-events.module#JoinedEventsPageModule',
     canLoad: [LoginGuard]
   },
+  { path: 'admin', loadChildren: './admin/admin.module#AdminPageModule' },
+
 ];
 
 @NgModule({
