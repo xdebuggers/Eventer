@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { NewEventPage } from './new-event.page';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
     CommonModule,
     IonicModule,
     ReactiveFormsModule,
+    SharedModule,
     RouterModule.forChild(routes)
   ],
   declarations: [NewEventPage]

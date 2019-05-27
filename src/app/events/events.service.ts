@@ -5,6 +5,7 @@ import { LoginService } from './../login/login.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { take, map, tap, delay, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { EventLocation } from './location.model';
 
 interface EventData {
   capacity: number;
@@ -15,6 +16,7 @@ interface EventData {
   interestedCount: number;
   name: string;
   userId: string;
+  location: EventLocation;
 }
 
 @Injectable({
@@ -48,7 +50,8 @@ export class EventsService {
                   new Date(resData[key].date),
                   resData[key].goingCount,
                   resData[key].interestedCount,
-                  resData[key].userId
+                  resData[key].userId,
+                  resData[key].location
                 )
               );
             }
@@ -74,13 +77,14 @@ export class EventsService {
           new Date(eventData.date),
           eventData.goingCount,
           eventData.interestedCount,
-          eventData.userId
+          eventData.userId,
+          eventData.location
         );
       })
     );
   }
 
-  addEvent(name: string, desc: string, capacity: number, date: Date) {
+  addEvent(name: string, desc: string, capacity: number, date: Date, location: EventLocation) {
     let generatedId: string;
     const newEvent = new Event(
       Math.random().toString(),
@@ -91,7 +95,8 @@ export class EventsService {
       date,
       0,
       0,
-      this.loginService.userId
+      this.loginService.userId,
+      location
     );
     // need to look again!!!!!
     return this.http
@@ -132,7 +137,8 @@ export class EventsService {
           oldEvent.date,
           oldEvent.goingCount,
           oldEvent.interestedCount,
-          oldEvent.userId
+          oldEvent.userId,
+          oldEvent.location
         );
         return this.http.put(
           this.fireBaseURL + '/my-events/' + eventId + '.json',

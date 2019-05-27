@@ -11,7 +11,7 @@ export class LoginGuard implements CanLoad {
 
   constructor(private loginService: LoginService, private router: Router) {}
   canLoad(route: Route, segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
-    if(!this.loginService.userIsLogedIn) {
+    if (!this.loginService.userIsLogedIn) {
       this.router.navigateByUrl('/login');
     }
     return this.loginService.userIsLogedIn;

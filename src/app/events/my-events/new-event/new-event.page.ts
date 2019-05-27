@@ -3,6 +3,7 @@ import { EventsService } from './../../events.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
+import { EventLocation } from '../../location.model';
 
 
 @Component({
@@ -40,8 +41,13 @@ export class NewEventPage implements OnInit {
       time: new FormControl(null,{
           updateOn: 'blur',
           validators: [Validators.required]
-        } )
+        } ),
+        location: new FormControl(null, {validators: [Validators.required]})
     });
+  }
+  onLocationPicked(location: EventLocation) {
+    this.form.patchValue({ location: location });
+
   }
 
   onCreateEvent() {
@@ -61,7 +67,8 @@ export class NewEventPage implements OnInit {
       this.form.value.name,
       this.form.value.desc,
       this.form.value.capacity,
-      new Date(s)
+      new Date(s),
+      this.form.value.location
       ).subscribe(() => {
         loadingEl.dismiss();
         this.form.reset();

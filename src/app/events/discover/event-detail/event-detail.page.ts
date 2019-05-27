@@ -13,6 +13,7 @@ import { JoinEventComponent } from './../../../joined-events/join-event/join-eve
 import { Subscription } from 'rxjs';
 import { JoinedEventsService } from './../../../joined-events/joined-events.service';
 import { LoginService } from './../../../login/login.service';
+import { MapModalComponent } from '../../../shared/map-modal/map-modal.component';
 
 @Component({
   selector: "app-event-detail",
@@ -123,8 +124,17 @@ export class EventDetailPage implements OnInit, OnDestroy {
             });
 
           });
-          
         }
       });
+  }
+  onShowFullMap() {
+    this.modalCtrl.create({component: MapModalComponent, componentProps: {
+      center: {lat: this.event.location.lat, lng: this.event.location.lng},
+      selectable: false,
+      closeBtnText: 'Close',
+      title: this.event.location.address
+    }}).then(modalEl => {
+      modalEl.present();
+    });
   }
 }
