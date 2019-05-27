@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
+   <ion-buttons slot="start">
       <ion-menu-button menu="m1"></ion-menu-button>
     </ion-buttons>
     <ion-title>Discover Events</ion-title>
@@ -8,35 +8,35 @@
 </ion-header>
 <ion-content>
   <ion-grid>
-    <ion-row>
-      <ion-col size="12" size-sm="8" offset-sm="2" text-center>
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title> {{loadedEvents[0].name}} </ion-card-title>
-          </ion-card-header>
-          <ion-img [src]="loadedEvents[0].imgUrl"></ion-img>
-          <ion-card-content>
-            <p>{{loadedEvents[0].desc}}</p>
-          </ion-card-content>
-          <div text-right>
-            <ion-button 
-            fill="clear" 
-            color="primary" 
-            [routerLink]="['/','events','tabs','discover',loadedEvents[0].id]"
-            >
-            More
-            </ion-button>
-          </div>
-        </ion-card>
-      </ion-col>
-    </ion-row>
+      <ion-row>
+          <ion-col size="12" size-sm="8" offset-sm="2" text-center>
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title> {{eventO[0].name}} </ion-card-title>
+              </ion-card-header>
+              <ion-img [src]="eventO[0].imgUrl"></ion-img>
+              <ion-card-content>
+                <p>{{eventO[0].desc}}</p>
+              </ion-card-content>
+              <div text-right>
+                <ion-button 
+                fill="clear" 
+                color="primary" 
+                [routerLink]="['/','events','tabs','discover',eventO[0].id]"
+                >
+                More
+                </ion-button>
+              </div>
+            </ion-card>
+          </ion-col>
+        </ion-row>
     <ion-row>
       <ion-col size="12" size-sm="8" offset-sm="2" text-center>
         <ion-list>
-          <ion-item *ngFor="let event of loadedEvents.slice(1)" 
-          [routerLink]="['/','events','tabs','discover',event.id]"
-          detail
-          >
+          <ng-container *ngFor="let event of eventO" >
+          <ion-item  *ngIf="event.id!=eventO[0].id"
+          [routerLink]="['/','events','tabs','discover',event.id]" 
+          detail >
             <ion-thumbnail slot="start">
               <ion-img [src]="event.imgUrl"></ion-img>
             </ion-thumbnail>
@@ -45,6 +45,7 @@
               <p>{{event.desc}}</p>
             </ion-label>
           </ion-item>
+        </ng-container>
         </ion-list>
       </ion-col>
     </ion-row>

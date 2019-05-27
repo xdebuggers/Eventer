@@ -13,6 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { environment } from '../environments/environment';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,9 +21,10 @@ import { environment } from '../environments/environment';
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
   //
   AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireDatabaseModule
+  AngularFireDatabaseModule
   ],
   providers: [
+    AngularFirestore,
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

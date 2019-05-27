@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 
 import {Event} from './event.model';
+//
+import { AngularFirestore } from '@angular/fire/firestore';
+import { EventO } from './event.model';
+import { query } from '@angular/core/src/render3';
+import { AngularFireDatabase } from '@angular/fire/database';
 
 @Injectable({
   providedIn: 'root'
@@ -33,5 +38,19 @@ export class EventsService {
     return {...this._events.find (p => p.id === id)};
   }
 
-  constructor() { }
+  constructor(private firestore: AngularFirestore) { }
+  getEventO() {
+    return this.firestore.collection("event", ref => 
+    ref.orderBy('id','desc')).snapshotChanges();
+}
+createEventO(eventO: EventO){
+  return this.firestore.collection('event').add(eventO);
+}
+updateEventO(eventO: EventO){
+  delete eventO.id;
+  this.firestore.doc('event/' + eventO.id).update(eventO);
+}
+deleteEventO(eventOId: string){
+  this.firestore.doc('event/' + eventOId).delete();
+}
 }
