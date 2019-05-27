@@ -25,7 +25,7 @@ export class JoinedEventsService {
     private http: HttpClient
     ) {}
 
-  fireBaseURL = 'https://eventer-xdebuggers.firebaseio.com';
+  fireBaseURL = 'https://eventer-app-xdebuggers.firebaseio.com';
   private _joinedEvents = new BehaviorSubject<JoindEvent[]>([]);
 
   get joinedEvents() {

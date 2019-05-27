@@ -24,7 +24,7 @@ export class EventsService {
   constructor(private loginService: LoginService, private http: HttpClient) {}
 
   private _events = new BehaviorSubject<Event[]>([]);
-  fireBaseURL = 'https://eventer-xdebuggers.firebaseio.com';
+  fireBaseURL = 'https://eventer-app-xdebuggers.firebaseio.com';
 
   get events() {
     return this._events.asObservable();
@@ -95,7 +95,7 @@ export class EventsService {
     );
     // need to look again!!!!!
     return this.http
-      .post<{ name: string }>(this.fireBaseURL, { ...newEvent, id: null })
+      .post<{ name: string }>(this.fireBaseURL + '/my-events.json', { ...newEvent, id: null })
       .pipe(
         switchMap(resData => {
           generatedId = resData.name;
