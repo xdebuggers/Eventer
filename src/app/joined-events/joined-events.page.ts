@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 export class JoinedEventsPage implements OnInit, OnDestroy {
 
   loadedJoinedEvents: JoindEvent[];
+  isLoading = false;
   private joinedEventsSub: Subscription;
   constructor(private joinedEventsService: JoinedEventsService, private loadingCtrl: LoadingController) { }
 
@@ -20,6 +21,14 @@ export class JoinedEventsPage implements OnInit, OnDestroy {
       this.loadedJoinedEvents = joinedEvents;
     });
   }
+
+  ionViewWillEnter() {
+    this.isLoading = true;
+    this.joinedEventsService.fetchJoinedEvents().subscribe(() => {
+      this.isLoading = false;
+    });
+  }
+
   onUnjoinEvent(joinedEvenetId: string, slidingJevent: IonItemSliding) {
     slidingJevent.close();
     this.loadingCtrl.create({

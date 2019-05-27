@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class LoginService {
 
   private _userIsLogedIn = true;
-  private _userId = 'abc';
+  private _userId = 'ab';
 
   get userIsLogedIn() {
     return this._userIsLogedIn;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Event } from './event.model';
 import { LoginService } from './../login/login.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { take, map, tap, delay, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
@@ -112,6 +112,13 @@ export class EventsService {
     let updatedEvents: Event[];
     return this.events.pipe(
       take(1),
+      switchMap(events => {
+        if (!events || events.length <= 0){
+          return this.fetchEvents();
+        } else {
+          return of(events);
+        }
+      }),
       switchMap(events => {
         const updatedEventIndex = events.findIndex(ev => ev.id === eventId);
         updatedEvents = [...events];

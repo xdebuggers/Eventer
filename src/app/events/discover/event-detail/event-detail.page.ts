@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import {
   NavController,
   ModalController,
   ActionSheetController,
-  LoadingController
+  LoadingController,
+  AlertController
 } from '@ionic/angular';
 import { EventsService } from '../../events.service';
 import { Event } from '../../event.model';
@@ -21,6 +22,7 @@ import { LoginService } from './../../../login/login.service';
 export class EventDetailPage implements OnInit, OnDestroy {
   event: Event;
   isJoinable = false;
+  isLoading = false;
   private eventSub: Subscription;
   constructor(
     private navCtrl: NavController,
@@ -30,7 +32,9 @@ export class EventDetailPage implements OnInit, OnDestroy {
     private actionsheetCtrl: ActionSheetController,
     private joinedEventsService: JoinedEventsService,
     private loadingCtrl: LoadingController,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private alertCtrl: AlertController,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -39,9 +43,18 @@ export class EventDetailPage implements OnInit, OnDestroy {
         this.navCtrl.navigateBack('/events/tabs/discover');
         return;
       }
+      this.isLoading = true;
       this.eventSub = this.eventsService.getEvent(paramMap.get('eventId')).subscribe(event => {
         this.event = event;
         this.isJoinable = event.userId !== this.loginService.userId;
+        this.isLoading = false;
+      }, error => {
+        this.alertCtrl.create({header: 'Ooops', message: 'Could not load the event', buttons: [{text: 'OK', handler: () => {
+          this.router.navigate(['/events/tabs/discover']);
+        }}]}).then(alertEl => {
+          alertEl.present();
+        });
+
       });
     });
   }
