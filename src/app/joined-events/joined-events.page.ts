@@ -29,9 +29,7 @@ export class JoinedEventsPage implements OnInit, OnDestroy {
       this.joinedEventsService.cancelJoinEvent(joinedEvenetId).subscribe(() => {
         loadingEl.dismiss();
       });
-    })
-    
-
+    });
   }
   ngOnDestroy() {
     if (this.joinedEventsSub) {

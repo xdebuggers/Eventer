@@ -14,6 +14,7 @@ export class DiscoverPage implements OnInit, OnDestroy{
 
   loadedEvents: Event[];
   releventEvents: Event[];
+  isLoading = false;
   private eventsSub: Subscription;
 
   constructor(private eventservices: EventsService, private loginService: LoginService) { }
@@ -25,11 +26,18 @@ export class DiscoverPage implements OnInit, OnDestroy{
       this.releventEvents = this.loadedEvents;
     });
   }
+  ionViewWillEnter() {
+    this.isLoading = true;
+    this.eventservices.fetchEvents().subscribe(() => {
+      this.isLoading = false;
+    });
+  }
+
 
   ngOnDestroy() {
     if (this.eventsSub) {
       this.eventsSub.unsubscribe();
-    }  
+    }
   }
   onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {
     if (event.detail.value === 'all') {

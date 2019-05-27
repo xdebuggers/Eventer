@@ -12,14 +12,23 @@
     <ion-segment-button value="all" checked>All Events</ion-segment-button>
     <ion-segment-button value="joinable">Joinable Events</ion-segment-button>
   </ion-segment>
-  <ion-grid *ngIf="!releventEvents || releventEvents.length <= 0">
+
+  <ion-grid *ngIf="isLoading">
+    <ion-row>
+      <ion-col size="12" size-sm="8" offset-sm="2" text-center>
+        <ion-spinner color="primary"></ion-spinner>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  
+  <ion-grid *ngIf="!isLoading && (!releventEvents || releventEvents.length <= 0)">
     <ion-row>
       <ion-col size="12" size-sm="8" offset-sm="2" text-center>
         <p>There are no joinable events at the moment</p>
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-grid *ngIf="releventEvents.length > 0">
+  <ion-grid *ngIf="!isLoading && releventEvents.length > 0">
     <ion-row>
       <ion-col size="12" size-sm="8" offset-sm="2" text-center>
         <ion-card>

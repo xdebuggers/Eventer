@@ -53,7 +53,10 @@ export class NewEventPage implements OnInit {
     }).then(loadingEl => {
       loadingEl.present();
 
-      let s = (this.form.value.date).toString() + ' ' + (this.form.value.time).toString();
+      const date = new Date (this.form.value.date);
+      const time = new Date (this.form.value.time);
+      const s = date.toDateString() + ' ' + time.toLocaleTimeString();
+      //console.log(s);
       this.eventsService.addEvent(
       this.form.value.name,
       this.form.value.desc,
@@ -65,8 +68,6 @@ export class NewEventPage implements OnInit {
         this.router.navigate(['/events/tabs/my-events']);
       });
     });
-    
-    
   }
 
 

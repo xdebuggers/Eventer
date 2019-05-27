@@ -13,11 +13,18 @@ import { Subscription } from 'rxjs';
 export class MyEventsPage implements OnInit , OnDestroy{
   myEvents: Event[];
   eventsSub: Subscription;
+  isLoading = false;
   constructor(private eventsService: EventsService, private router: Router) { }
 
   ngOnInit() {
     this.eventsSub = this.eventsService.events.subscribe(events => {
       this.myEvents = events;
+    });
+  }
+  ionViewWillEnter() {
+    this.isLoading = true;
+    this.eventsService.fetchEvents().subscribe(() => {
+      this.isLoading = false;
     });
   }
 
