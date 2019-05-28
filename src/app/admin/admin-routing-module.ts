@@ -9,7 +9,7 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: '/admin/tabs/usersss',
+                redirectTo: 'admin',
                 pathMatch: 'full'
             },
             {
@@ -17,13 +17,13 @@ const routes: Routes = [
                 loadChildren: './users/users.module#UsersPageModule'
             },
             {
-                path: 'eventsss',
+                path: 'user-events',
                 loadChildren: './user-events/user-events.module#UserEventsPageModule'
             }
         ]
     }, {
         path: '',
-        redirectTo: '/admin/tabs/usersss',
+        redirectTo: 'admin',
         pathMatch: 'full'
       }];
 
