@@ -3,6 +3,78 @@
     <ion-buttons slot="start">
       <ion-menu-button menu="m1"></ion-menu-button>
     </ion-buttons>
-    <ion-title>Discover Events</ion-title>
+    <ion-title>Events</ion-title>
   </ion-toolbar>
 </ion-header>
+
+<ion-content padding>
+  <!--
+  <ion-segment (ionChange)="onFilterUpdate($event)">
+    <ion-segment-button value="all" checked>All Events</ion-segment-button>
+    <ion-segment-button value="joinable">Joinable Events</ion-segment-button>
+  </ion-segment>
+-->
+<ion-grid *ngIf="isLoading">
+  <ion-row>
+    <ion-col size="12" size-sm="8" offset-sm="2" text-center>
+      <ion-spinner color="primary"></ion-spinner>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+<ion-grid *ngIf="!isLoading && (!releventEvents || releventEvents.length <= 0)">
+  <ion-row>
+    <ion-col size="12" size-sm="8" offset-sm="2" text-center>
+      <p>There are no joinable events at the moment</p>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+<ion-grid *ngIf="!isLoading && releventEvents.length > 0">
+    <!--
+
+  <ion-row>
+    <ion-col size="12" size-sm="8" offset-sm="2" text-center>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title> {{releventEvents[0].name}} </ion-card-title>
+        </ion-card-header>
+        <ion-img [src]="releventEvents[0].imgUrl"></ion-img>
+        <ion-card-content>
+          <p>{{releventEvents[0].desc}}</p>
+        </ion-card-content>
+        <div text-right>
+          <ion-button 
+          fill="clear" 
+          color="primary" 
+          [routerLink]="['/','events','tabs','discover',releventEvents[0].id]"
+          >
+          More
+          </ion-button>
+        </div>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+[routerLink]="['/','events','tabs','discover',event.id]"
+        detail
+-->
+  <ion-row>
+    <ion-col size="12" size-sm="8" offset-sm="2" text-center>
+      <ion-list>
+        <ion-item *ngFor="let event of releventEvents">
+        
+          <ion-thumbnail slot="start">
+            <ion-img [src]="event.imgUrl"></ion-img>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>{{event.name}}</h2>
+            <p>{{event.desc}}</p>
+          </ion-label>
+          
+          <ion-button  (click)="deleteE(event.id)">Delete</ion-button>
+        </ion-item>
+        
+      </ion-list>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+</ion-content>

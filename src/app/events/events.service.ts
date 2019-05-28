@@ -5,6 +5,7 @@ import { LoginService } from './../login/login.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { take, map, tap, delay, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { Options } from 'selenium-webdriver/opera';
 
 interface EventData {
   capacity: number;
@@ -29,6 +30,15 @@ export class EventsService {
   get events() {
     return this._events.asObservable();
   }
+
+  deleteEvents(id: string){
+    this.http.delete(this.fireBaseURL + '/my-events/' + id + '.json').subscribe();
+    //alert("Başarıyla Silindi");
+    
+
+    //location.reload(); 
+  }
+
 
   fetchEvents() {
     return this.http
