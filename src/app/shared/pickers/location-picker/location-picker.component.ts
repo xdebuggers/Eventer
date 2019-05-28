@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import {
   ModalController,
   ActionSheetController,
@@ -21,6 +21,7 @@ export class LocationPickerComponent implements OnInit {
   selectedLocationImg: string;
   isLoading = false;
   @Output() locationPick = new EventEmitter<EventLocation>();
+  @Input() showPreview = false;
   constructor(
     private modalCtrl: ModalController,
     private http: HttpClient,

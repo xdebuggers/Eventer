@@ -84,13 +84,21 @@ export class EventsService {
     );
   }
 
-  addEvent(name: string, desc: string, capacity: number, date: Date, location: EventLocation) {
+  uploadImage(image: File) {
+    const uploadData = new FormData();
+    uploadData.append('image', image);
+    return this.http
+    .post<{imageUrl: string, imagePath: string}>
+    ('https://us-central1-eventer-app-xdebuggers.cloudfunctions.net/storeImage', uploadData);
+  }
+
+  addEvent(name: string, desc: string, capacity: number, date: Date, location: EventLocation, imageUrl: string) {
     let generatedId: string;
     const newEvent = new Event(
       Math.random().toString(),
       name,
       desc,
-      'https://cdn.zuerich.com/sites/default/files/styles/sharing/public/web_zuerich_home_topevents_1600x900.jpg',
+      imageUrl,
       capacity,
       date,
       0,
