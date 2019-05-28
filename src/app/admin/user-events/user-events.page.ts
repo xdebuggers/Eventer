@@ -26,17 +26,18 @@ export class UserEventsPage implements OnInit {
       this.releventEvents = this.loadedEvents;
     });
   }
+  deleteE(id:string){
+    this.eventservices.deleteEvents(id);
+  }
+  
   ionViewWillEnter() {
     this.isLoading = true;
     this.eventservices.fetchEvents().subscribe(() => {
       this.isLoading = false;
     });
   }
-  deleteE(id:string){
-    this.eventservices.deleteEvents(id)
-    
-  }
-  
+
+
   ngOnDestroy() {
     if (this.eventsSub) {
       this.eventsSub.unsubscribe();

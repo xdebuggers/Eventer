@@ -33,12 +33,9 @@ export class EventsService {
 
   deleteEvents(id: string){
     this.http.delete(this.fireBaseURL + '/my-events/' + id + '.json').subscribe();
-    //alert("Başarıyla Silindi");
-    
 
-    //location.reload(); 
   }
-
+  
 
   fetchEvents() {
     return this.http

@@ -12,3 +12,12 @@ export class Event {
         public userId: string
         ) {}
     }
+    export class User {
+
+        constructor(
+            public name: string,
+            public pass: string,
+
+            ) {}
+        }
+    

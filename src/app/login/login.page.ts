@@ -32,7 +32,7 @@ export class LoginPage implements OnInit {
       setTimeout(() => {
         this.isLoading = false;
         loadingEl.dismiss();
-        this.router.navigateByUrl('/eventss');
+        this.router.navigateByUrl('/events/tabs/discover');
       }, 1500);
     });
   }
