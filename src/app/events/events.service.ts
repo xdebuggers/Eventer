@@ -19,6 +19,7 @@ interface EventData {
   location: EventLocation;
 }
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -34,6 +35,7 @@ export class EventsService {
 
   fetchEvents() {
     return this.loginService.token.pipe(take(1), switchMap(token => {
+      //console.log(this.fireBaseURL + `/my-events.json?auth=${token}`);
       return this.http
       .get<{ [key: string]: EventData }>(this.fireBaseURL + `/my-events.json?auth=${token}`)
     }),
@@ -64,6 +66,48 @@ export class EventsService {
         })
       );
   }
+
+  fetchMyEvents() {
+    let fetchedUserId: string;
+    return this.loginService.userId.pipe(take(1), switchMap(userId => {
+      if (!userId) {
+        throw new Error('User not found');
+      }
+      fetchedUserId = userId;
+      return this.loginService.token;
+    }), take(1), switchMap(token => {
+      return this.http.get<{ [key: string]: EventData }>
+    (this.fireBaseURL + `/my-events.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`
+    );
+    }),
+      map(resData => {
+          const events = [];
+          for (const key in resData) {
+            if (resData.hasOwnProperty(key)) {
+              events.push(
+                new Event(
+                  key,
+                  resData[key].name,
+                  resData[key].desc,
+                  resData[key].imgUrl,
+                  resData[key].capacity,
+                  new Date(resData[key].date),
+                  resData[key].goingCount,
+                  resData[key].interestedCount,
+                  resData[key].userId,
+                  resData[key].location
+                )
+              );
+            }
+          }
+          return events;
+        }),
+        tap(events => {
+          this._events.next(events);
+        })
+      );
+  }
+
 
   getEvent(id: string) {
     return this.loginService.token.pipe(take(1), switchMap(token => {
@@ -178,6 +222,67 @@ export class EventsService {
       })
     );
   }
+
+  updateEventCounts(eventId: string, type: string) {
+    let updatedEvents: Event[];
+    let fetchedToken;
+    return this.loginService.token.pipe(take(1), switchMap(token => {
+      fetchedToken = token;
+      return this.events;
+    }),
+      take(1),
+      switchMap(events => {
+        if (!events || events.length <= 0){
+          return this.fetchEvents();
+        } else {
+          return of(events);
+        }
+      }),
+      switchMap(events => {
+        const updatedEventIndex = events.findIndex(ev => ev.id === eventId);
+        updatedEvents = [...events];
+        const oldEvent = updatedEvents[updatedEventIndex];
+        if (type === 'Going') {
+          oldEvent.goingCount++;
+          //console.log(oldEvent.goingCount);
+        } else {
+          oldEvent.interestedCount++;
+        }
+        updatedEvents[updatedEventIndex] = new Event(
+          oldEvent.id,
+          oldEvent.name,
+          oldEvent.desc,
+          oldEvent.imgUrl,
+          oldEvent.capacity,
+          oldEvent.date,
+          oldEvent.goingCount,
+          oldEvent.interestedCount,
+          oldEvent.userId,
+          oldEvent.location
+        );
+        return this.http.put(
+          this.fireBaseURL + `/my-events/${eventId}.json?auth=${fetchedToken}`,
+          { ...updatedEvents[updatedEventIndex], id: null }
+        );
+      }),
+      tap(() => {
+        this._events.next(updatedEvents);
+      })
+    );
+  }
+
+  deleteEvent(eventId: string) {
+    return this.loginService.token.pipe(take(1), switchMap(token => {
+      return this.http.delete(this.fireBaseURL + `/my-events/${eventId}.json?auth=${token}`);
+    }), switchMap(() => {
+      return this.events;
+    }),
+    take(1),
+    tap(events => {
+      this._events.next(events.filter(e => e.id !== eventId));
+    }));
+  }
+
 }
 
 /*new Event('e1',

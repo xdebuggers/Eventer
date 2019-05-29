@@ -29,7 +29,6 @@ export class JoinEventComponent implements OnInit {
       return;
     }
     if (this.selectedMode === 'going'){
-      this.selectedEvent.goingCount++;
       this.modalCtrl.dismiss({joinData: {
         firstName: this.form.value['first-name'],
         lastName: this.form.value['last-name'],
@@ -38,7 +37,6 @@ export class JoinEventComponent implements OnInit {
       } }, 'confirm');
 
     } else {
-      this.selectedEvent.interestedCount++;
       this.modalCtrl.dismiss({joinData: {
         firstName: this.form.value['first-name'],
         lastName: this.form.value['last-name'],

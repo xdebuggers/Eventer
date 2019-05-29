@@ -94,7 +94,7 @@ export class NewEventPage implements OnInit {
     if (!this.form.valid  || !this.form.get('image').value) {
       return;
     }
-    console.log(this.form.value);
+    //console.log(this.form.value);
     this.loadingCtrl.create({
       message: 'Creating Event...'
     }).then(loadingEl => {

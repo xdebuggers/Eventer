@@ -13,3 +13,12 @@ export class JoindEvent {
 
     }
 }
+export class JoinedEventComments {
+
+    constructor(
+        public type: string,
+        public firsName: string,
+        public lastName: string,
+        public comment: string
+    ) {}
+}

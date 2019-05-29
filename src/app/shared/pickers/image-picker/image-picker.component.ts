@@ -23,11 +23,11 @@ export class ImagePickerComponent implements OnInit {
   constructor(private platform: Platform) {}
 
   ngOnInit() {
-    console.log('Mobile:',this.platform.is('mobile'));
-    console.log('Hybrid:',this.platform.is('hybrid'));
-    console.log('iOS:',this.platform.is('ios'));
-    console.log('Android:',this.platform.is('android'));
-    console.log('Desktop:',this.platform.is('desktop'));
+    //console.log('Mobile:',this.platform.is('mobile'));
+    //console.log('Hybrid:',this.platform.is('hybrid'));
+    //console.log('iOS:',this.platform.is('ios'));
+    //console.log('Android:',this.platform.is('android'));
+    //console.log('Desktop:',this.platform.is('desktop'));
     if ((this.platform.is('mobile') && !this.platform.is('hybrid')) || this.platform.is('desktop')) {
       this.usePicker = true;
     }
@@ -59,7 +59,7 @@ export class ImagePickerComponent implements OnInit {
       });
   }
   onFileChosen(event: Event) {
-    console.log(event);
+    //console.log(event);
     const pickedFile = (event.target as HTMLInputElement).files[0];
     if(!pickedFile) {
       return;

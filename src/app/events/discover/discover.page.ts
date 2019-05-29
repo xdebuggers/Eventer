@@ -21,7 +21,6 @@ export class DiscoverPage implements OnInit, OnDestroy{
   constructor(private eventservices: EventsService, private loginService: LoginService) { }
 
   ngOnInit() {
-
     this.eventsSub = this.eventservices.events.subscribe(events => {
       this.loadedEvents = events;
       this.releventEvents = this.loadedEvents;
@@ -33,7 +32,6 @@ export class DiscoverPage implements OnInit, OnDestroy{
       this.isLoading = false;
     });
   }
-
 
   ngOnDestroy() {
     if (this.eventsSub) {
