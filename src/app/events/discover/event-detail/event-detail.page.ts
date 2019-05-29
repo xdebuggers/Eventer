@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
 import { JoinedEventsService } from './../../../joined-events/joined-events.service';
 import { LoginService } from './../../../login/login.service';
 import { MapModalComponent } from '../../../shared/map-modal/map-modal.component';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: "app-event-detail",
@@ -45,9 +46,17 @@ export class EventDetailPage implements OnInit, OnDestroy {
         return;
       }
       this.isLoading = true;
-      this.eventSub = this.eventsService.getEvent(paramMap.get('eventId')).subscribe(event => {
+      let fetchedUserId: string;
+      this.loginService.userId.pipe(switchMap(userId => {
+        if(!userId) {
+          throw new Error('Found no user');
+        }
+        fetchedUserId = userId;
+        return this.eventsService.getEvent(paramMap.get('eventId'))
+
+      })).subscribe(event => {
         this.event = event;
-        this.isJoinable = event.userId !== this.loginService.userId;
+        this.isJoinable = event.userId !== fetchedUserId;
         this.isLoading = false;
       }, error => {
         this.alertCtrl.create({header: 'Ooops', message: 'Could not load the event', buttons: [{text: 'OK', handler: () => {

@@ -2,8 +2,9 @@ import { Injectable } from "@angular/core";
 import { JoindEvent } from "./joined-event.model";
 import { BehaviorSubject } from "rxjs";
 import { LoginService } from "./../login/login.service";
-import { take, tap, delay, switchMap, map } from "rxjs/operators";
+import { take, tap, switchMap, map } from "rxjs/operators";
 import { HttpClient } from '@angular/common/http';
+import { Event } from '../events/event.model';
 
 interface JoinedEventData {
   comment: string;
@@ -42,20 +43,33 @@ export class JoinedEventsService {
     type: string
   ) {
     let generatedId: string;
-    const newJoined = new JoindEvent(
-      Math.random().toString(),
-      eventId,
-      this.loginService.userId,
-      eventName,
-      eventImg,
-      type,
-      firstName,
-      lastName,
-      comment
-    );
-    return this.http.post<{name: string}>(this.fireBaseURL + '/joined-events.json',
-    {...newJoined, id: null}
-    ).pipe(switchMap(resData => {
+    let newJoined: JoindEvent;
+    let fetchedUserId: string;
+    return this.loginService.userId.pipe(take(1), switchMap(userId => {
+      if (!userId) {
+        throw new Error('No user id found');
+      }
+      fetchedUserId = userId;
+      return this.loginService.token;  
+    }), 
+    take(1),
+    switchMap(token => {
+      newJoined = new JoindEvent(
+        Math.random().toString(),
+        eventId,
+        fetchedUserId,
+        eventName,
+        eventImg,
+        type,
+        firstName,
+        lastName,
+        comment
+      );
+      return this.http.post<{name: string}>(this.fireBaseURL + `/joined-events.json?auth=${token}`,
+      {...newJoined, id: null}
+      );
+    }),
+    switchMap(resData => {
       generatedId = resData.name;
       return this.joinedEvents;
     }), take(1),
@@ -66,8 +80,9 @@ export class JoinedEventsService {
   }
 
   cancelJoinEvent(joinedEventId: string) {
-    return this.http.delete(this.fireBaseURL + `/joined-events/${joinedEventId}.json`)
-    .pipe(switchMap(() => {
+    return this.loginService.token.pipe(take(1), switchMap(token => {
+      return this.http.delete(this.fireBaseURL + `/joined-events/${joinedEventId}.json?auth=${token}`);
+    }), switchMap(() => {
       return this.joinedEvents;
     }),
     take(1),
@@ -77,9 +92,19 @@ export class JoinedEventsService {
   }
 
   fetchJoinedEvents() {
-    return this.http.get<{[key: string]: JoinedEventData}>
-    (this.fireBaseURL + `/joined-events.json?orderBy="userId"&equalTo="${this.loginService.userId}"`
-    ).pipe(map(joinedEventData => {
+
+    let fetchedUserId: string;
+    return this.loginService.userId.pipe(take(1), switchMap(userId => {
+      if (!userId) {
+        throw new Error('User not found');
+      }
+      fetchedUserId = userId;
+      return this.loginService.token;
+    }), take(1), switchMap(token => {
+      return this.http.get<{[key: string]: JoinedEventData}>
+    (this.fireBaseURL + `/joined-events.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`
+    );
+    }), map(joinedEventData => {
       const joinedEvents = [];
       for (const key in joinedEventData) {
         if (joinedEventData.hasOwnProperty(key)) {

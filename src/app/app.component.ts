@@ -1,14 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import {Plugins, Capacitor} from '@capacitor/core';
 import { LoginService } from './login/login.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
+  private authSub: Subscription;
+  private previousAuthState = false;
   constructor(
     private platform: Platform,
     private loginServise: LoginService,
@@ -16,6 +20,20 @@ export class AppComponent {
 
   ) {
     this.initializeApp();
+  }
+
+  ngOnInit() {
+    this.authSub = this.loginServise.userIsLogedIn.subscribe(isAuth => {
+      if (!isAuth && this.previousAuthState !== isAuth) {
+        this.router.navigateByUrl('/login');
+      }
+      this.previousAuthState = isAuth;
+    });
+  }
+  ngOnDestroy() {
+    if(this.authSub) {
+      this.authSub.unsubscribe();
+    }
   }
 
 
@@ -28,7 +46,6 @@ export class AppComponent {
   }
   onLogout() {
     this.loginServise.logout();
-    this.router.navigateByUrl('/login');
 
   }
 }

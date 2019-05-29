@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Eventer</string>
     <string name="title_activity_main">Eventer</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="fileprovider_authority">io.ionic.starter.fileprovider</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="package_name">com.xdebuggers.eventer</string>
+    <string name="fileprovider_authority">com.xdebuggers.eventer.fileprovider</string>
+    <string name="custom_url_scheme">com.xdebuggers.eventer.starter</string>
 </resources>
