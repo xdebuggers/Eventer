@@ -6,40 +6,39 @@
     <ion-title>About</ion-title>
   </ion-toolbar>
 </ion-header>
+<ion-grid>
+  <ion-row>
+    <ion-col size="12" size-sm="8" offset-sm="2" text-center>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title><p class="baslik">About</p> </ion-card-title>
+        </ion-card-header>
+        <ion-img
+          alt="LOGO"
+          src="https://firebasestorage.googleapis.com/v0/b/eventer-app-xdebuggers.appspot.com/o/images%2Flogo_k%C4%B1rp%C4%B1lm%C4%B1s.png?alt=media&token=c98344f1-fff2-44da-8d49-6763fd27f826"
+        ></ion-img>
+        <ion-card-content>
+          <p class="yazi">
+            Muhammed Bedavi - 161307066<br />
+            Onur Kantar - 171307052
+          </p>
+          <br />
 
-  <ion-grid *ngIf="isLoading">
-    <ion-row>
-      <ion-col size="12" size-sm="8" offset-sm="2" text-center>
-        <ion-spinner color="primary"></ion-spinner>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12" size-sm="8" offset-sm="2" text-center>
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title><p class="baslik">About</p> </ion-card-title>
-          </ion-card-header>
-          <ion-img src="https://firebasestorage.googleapis.com/v0/b/eventer-app-xdebuggers.appspot.com/o/images%2Flogo_k%C4%B1rp%C4%B1lm%C4%B1s.png?alt=media&token=c98344f1-fff2-44da-8d49-6763fd27f826"></ion-img>
-          <ion-card-content>
-            <p class="yazi">
-              Muhammed Bedavi - 171307066<br>
-              Onur Kantar - 171307052
-            </p>
-            <br>
-          
-            <p class="aciklama">Bu uygulama Mobil Uygulama Geliştirme dersinin proje ödevidir. Bu uygulama genel olarak
-                dünya çabında gerçekleştirilen etkinliklerin insanlara daha kolay bir şekilde ulaştırılabilmesi ve
-                etkinlik sahiplerinin etkinliğe katılacak kişi sayısı gibi genel istatistiksel verilere ulaşabilmesini sağlamaktadır.
-              <br>
-            </p>
-            <p  class="link">
-              <a href="https://github.com/xdebuggers/Eventer" target="_blank">GitHub Linki</a>
-              </p>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-
+          <p class="aciklama">
+            Bu uygulama Mobil Uygulama Geliştirme dersinin proje ödevidir. Bu
+            uygulama genel olarak dünya çabında gerçekleştirilen etkinliklerin
+            insanlara daha kolay bir şekilde ulaştırılabilmesi ve etkinlik
+            sahiplerinin etkinliğe katılacak kişi sayısı gibi genel
+            istatistiksel verilere ulaşabilmesini sağlamaktadır.
+            <br />
+          </p>
+          <p class="link">
+            <a href="https://github.com/xdebuggers/Eventer" target="_blank"
+              >GitHub Linki</a
+            >
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-grid>
