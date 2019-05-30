@@ -33,6 +33,12 @@ export class EventsService {
     return this._events.asObservable();
   }
 
+  deleteEvents(id: string){
+    this.http.delete(this.fireBaseURL + '/my-events/' + id + '.json').subscribe();
+
+  }
+  
+
   fetchEvents() {
     return this.loginService.token.pipe(take(1), switchMap(token => {
       //console.log(this.fireBaseURL + `/my-events.json?auth=${token}`);

@@ -16,9 +16,14 @@ const routes: Routes = [
     canLoad: [LoginGuard]
   },
   { path: 'about',
-    loadChildren: './about/about.module#AboutPageModule',
-    canLoad: [LoginGuard]
+   loadChildren: './about/about.module#AboutPageModule',
+   canLoad: [LoginGuard]
   },
+  { path: 'admin', 
+  loadChildren: './admin/admin.module#AdminPageModule',
+  canLoad: [LoginGuard]
+ },
+
 ];
 
 @NgModule({

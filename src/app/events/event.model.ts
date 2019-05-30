@@ -15,3 +15,5 @@ export class Event {
         public location: EventLocation
         ) {}
     }
+
+    
