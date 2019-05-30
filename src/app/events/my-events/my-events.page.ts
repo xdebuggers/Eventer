@@ -23,7 +23,7 @@ export class MyEventsPage implements OnInit , OnDestroy{
   }
   ionViewWillEnter() {
     this.isLoading = true;
-    this.eventsService.fetchEvents().subscribe(() => {
+    this.eventsService.fetchMyEvents().subscribe(() => {
       this.isLoading = false;
     });
   }

@@ -13,6 +13,8 @@ import { JoinEventComponent } from './../../../joined-events/join-event/join-eve
 import { Subscription } from 'rxjs';
 import { JoinedEventsService } from './../../../joined-events/joined-events.service';
 import { LoginService } from './../../../login/login.service';
+import { MapModalComponent } from '../../../shared/map-modal/map-modal.component';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: "app-event-detail",
@@ -21,9 +23,12 @@ import { LoginService } from './../../../login/login.service';
 })
 export class EventDetailPage implements OnInit, OnDestroy {
   event: Event;
+  
   isJoinable = false;
   isLoading = false;
   private eventSub: Subscription;
+  private updateSub: Subscription;
+  
   constructor(
     private navCtrl: NavController,
     private route: ActivatedRoute,
@@ -34,7 +39,8 @@ export class EventDetailPage implements OnInit, OnDestroy {
     private loadingCtrl: LoadingController,
     private loginService: LoginService,
     private alertCtrl: AlertController,
-    private router: Router
+    private router: Router,
+    private eventService: EventsService
   ) {}
 
   ngOnInit() {
@@ -44,9 +50,17 @@ export class EventDetailPage implements OnInit, OnDestroy {
         return;
       }
       this.isLoading = true;
-      this.eventSub = this.eventsService.getEvent(paramMap.get('eventId')).subscribe(event => {
+      let fetchedUserId: string;
+      this.loginService.userId.pipe(switchMap(userId => {
+        if (!userId) {
+          throw new Error('Found no user');
+        }
+        fetchedUserId = userId;
+        return this.eventsService.getEvent(paramMap.get('eventId'));
+
+      })).subscribe(event => {
         this.event = event;
-        this.isJoinable = event.userId !== this.loginService.userId;
+        this.isJoinable = event.userId !== fetchedUserId;
         this.isLoading = false;
       }, error => {
         this.alertCtrl.create({header: 'Ooops', message: 'Could not load the event', buttons: [{text: 'OK', handler: () => {
@@ -59,8 +73,11 @@ export class EventDetailPage implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy() {
-    if(this.eventSub) {
+    if (this.eventSub) {
       this.eventSub.unsubscribe();
+    }
+    if (this.updateSub) {
+      this.updateSub.unsubscribe();
     }
   }
 
@@ -92,7 +109,7 @@ export class EventDetailPage implements OnInit, OnDestroy {
       });
   }
   openJoinEventModal(mode: 'going' | 'interested') {
-    console.log(mode);
+    //console.log(mode);
     this.modalCtrl
       .create({
         component: JoinEventComponent,
@@ -103,28 +120,42 @@ export class EventDetailPage implements OnInit, OnDestroy {
         return modalEl.onDidDismiss();
       })
       .then(resaultData => {
-        console.log(resaultData.data, resaultData.role);
+        //console.log(resaultData.data, resaultData.role);
         if (resaultData.role === 'confirm') {
           this.loadingCtrl.create({
             message: 'Joining Event...'
           }).then(loadingEl => {
             loadingEl.present();
             const data = resaultData.data.joinData;
-            this.joinedEventsService.joinEvent(
+            this.updateSub = this.eventService
+          .updateEventCounts(
             this.event.id,
-            this.event.name,
-            this.event.imgUrl,
-            data.firstName,
-            data.lastName,
-            data.comment,
             data.type
-            ).subscribe(() => {
-              loadingEl.dismiss();
-            });
-
+          ).subscribe(() => {
+            this.joinedEventsService.joinEvent(
+              this.event.id,
+              this.event.name,
+              this.event.imgUrl,
+              data.firstName,
+              data.lastName,
+              data.comment,
+              data.type
+              ).subscribe(() => {
+                loadingEl.dismiss();
+              });
           });
-          
+          });
         }
       });
+  }
+  onShowFullMap() {
+    this.modalCtrl.create({component: MapModalComponent, componentProps: {
+      center: {lat: this.event.location.lat, lng: this.event.location.lng},
+      selectable: false,
+      closeBtnText: 'Close',
+      title: this.event.location.address
+    }}).then(modalEl => {
+      modalEl.present();
+    });
   }
 }

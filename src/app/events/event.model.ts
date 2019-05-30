@@ -1,3 +1,5 @@
+import { EventLocation } from './location.model';
+
 export class Event {
 
     constructor(
@@ -9,7 +11,8 @@ export class Event {
         public date: Date,
         public goingCount: number,
         public interestedCount: number,
-        public userId: string
+        public userId: string,
+        public location: EventLocation
         ) {}
     }
 

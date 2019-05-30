@@ -4,6 +4,7 @@ import { Event} from '../event.model';
 import { Subscription } from 'rxjs';
 import { SegmentChangeEventDetail } from '@ionic/core';
 import { LoginService } from './../../login/login.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-discover',
@@ -20,7 +21,6 @@ export class DiscoverPage implements OnInit, OnDestroy{
   constructor(private eventservices: EventsService, private loginService: LoginService) { }
 
   ngOnInit() {
-
     this.eventsSub = this.eventservices.events.subscribe(events => {
       this.loadedEvents = events;
       this.releventEvents = this.loadedEvents;
@@ -33,21 +33,20 @@ export class DiscoverPage implements OnInit, OnDestroy{
     });
   }
 
-
   ngOnDestroy() {
     if (this.eventsSub) {
       this.eventsSub.unsubscribe();
     }
   }
   onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {
-    if (event.detail.value === 'all') {
-      this.releventEvents = this.loadedEvents;
-    } else {
-      this.releventEvents = this.loadedEvents.filter(
-        event => event.userId !== this.loginService.userId);
+    this.loginService.userId.pipe(take(1)).subscribe(userId => {
+      if (event.detail.value === 'all') {
+        this.releventEvents = this.loadedEvents;
+      } else {
+        this.releventEvents = this.loadedEvents.filter(
+          event => event.userId !== userId);
     }
-
+    });
   }
 
 }
-;
