@@ -5,6 +5,8 @@ import { Event} from '../../events/event.model';
 import { Subscription } from 'rxjs';
 import { SegmentChangeEventDetail } from '@ionic/core';
 import { LoginService } from './../../login/login.service';
+import { LoadingController } from '@ionic/angular';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-user-events',
   templateUrl: './user-events.page.html',
@@ -17,19 +19,20 @@ export class UserEventsPage implements OnInit {
   isLoading = false;
   private eventsSub: Subscription;
 
-  constructor(private eventservices: EventsService, private loginService: LoginService) { }
+  constructor(
+    private eventservices: EventsService, 
+    private loginService: LoginService, 
+    private loadingCtrl: LoadingController,
+    private eventsService: EventsService,
+    private router: Router
+    ) { }
 
   ngOnInit() {
-
     this.eventsSub = this.eventservices.events.subscribe(events => {
       this.loadedEvents = events;
       this.releventEvents = this.loadedEvents;
     });
   }
-  deleteE(id:string){
-    this.eventservices.deleteEvents(id);
-  }
-  
   ionViewWillEnter() {
     this.isLoading = true;
     this.eventservices.fetchEvents().subscribe(() => {
@@ -37,20 +40,22 @@ export class UserEventsPage implements OnInit {
     });
   }
 
-
   ngOnDestroy() {
     if (this.eventsSub) {
       this.eventsSub.unsubscribe();
     }
   }
-  onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {
-    if (event.detail.value === 'all') {
-      this.releventEvents = this.loadedEvents;
-    } else {
-      this.releventEvents = this.loadedEvents.filter(
-        event => event.userId !== this.loginService.userId);
-    }
 
+  onDeleteEvent(evenetId: string) {
+    this.loadingCtrl.create({
+      message: 'Deleting your event...'
+    }).then(loadingEl => {
+      loadingEl.present();
+      this.eventsService.deleteEvent(evenetId).subscribe(() => {
+        loadingEl.dismiss();
+        this.router.navigate(['/admin/tabs/user-events']);
+      });
+    });
   }
   
 }

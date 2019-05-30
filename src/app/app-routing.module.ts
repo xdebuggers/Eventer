@@ -15,10 +15,15 @@ const routes: Routes = [
     loadChildren: './joined-events/joined-events.module#JoinedEventsPageModule',
     canLoad: [LoginGuard]
   },
-  { path: 'about', loadChildren: './about/about.module#AboutPageModule' },
-  { path: 'admin', loadChildren: './admin/admin.module#AdminPageModule' },
-  { path: 'user-events', loadChildren: './admin/user-events/user-events.module#UserEventsPageModule' },
-  { path: 'users', loadChildren: './admin/users/users.module#UsersPageModule'}
+  { path: 'about',
+   loadChildren: './about/about.module#AboutPageModule',
+   canLoad: [LoginGuard]
+  },
+  { path: 'admin', 
+  loadChildren: './admin/admin.module#AdminPageModule',
+  canLoad: [LoginGuard]
+ },
+
 ];
 
 @NgModule({
