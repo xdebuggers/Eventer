@@ -1,4 +1,12 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+  Input
+} from '@angular/core';
 import {
   Plugins,
   Capacitor,
@@ -23,12 +31,15 @@ export class ImagePickerComponent implements OnInit {
   constructor(private platform: Platform) {}
 
   ngOnInit() {
-    //console.log('Mobile:',this.platform.is('mobile'));
-    //console.log('Hybrid:',this.platform.is('hybrid'));
-    //console.log('iOS:',this.platform.is('ios'));
-    //console.log('Android:',this.platform.is('android'));
-    //console.log('Desktop:',this.platform.is('desktop'));
-    if ((this.platform.is('mobile') && !this.platform.is('hybrid')) || this.platform.is('desktop')) {
+    // console.log('Mobile:',this.platform.is('mobile'));
+    // console.log('Hybrid:',this.platform.is('hybrid'));
+    // console.log('iOS:',this.platform.is('ios'));
+    // console.log('Android:',this.platform.is('android'));
+    // console.log('Desktop:',this.platform.is('desktop'));
+    if (
+      (this.platform.is('mobile') && !this.platform.is('hybrid')) ||
+      this.platform.is('desktop')
+    ) {
       this.usePicker = true;
     }
   }
@@ -38,30 +49,52 @@ export class ImagePickerComponent implements OnInit {
       this.filePickerRef.nativeElement.click();
       return;
     }
-    Plugins.Camera.getPhoto({
-      quality: 50,
-      source: CameraSource.Prompt,
-      correctOrientation: true,
-      width: 600,
-      resultType: CameraResultType.DataUrl
-    })
-      .then(image => {
-        this.selectedImage = image.dataUrl;
-        this.imagePick.emit(image.dataUrl);
-        // console.log(image.webPath);
+    if (this.platform.is('hybrid')) {
+      Plugins.Camera.getPhoto({
+        quality: 50,
+        source: CameraSource.Prompt,
+        correctOrientation: true,
+        width: 600,
+        resultType: CameraResultType.DataUrl
       })
-      .catch(error => {
-        console.log(error);
-        if (this.usePicker) {
-          this.filePickerRef.nativeElement.click();
-        }
-        return false;
-      });
+        .then(image => {
+          this.selectedImage = image.dataUrl;
+          this.imagePick.emit(image.dataUrl);
+          // console.log(image.webPath);
+        })
+        .catch(error => {
+          console.log(error);
+          if (this.usePicker) {
+            this.filePickerRef.nativeElement.click();
+          }
+          return false;
+        });
+    } else {
+      Plugins.Camera.getPhoto({
+        quality: 50,
+        source: CameraSource.Prompt,
+        correctOrientation: true,
+        width: 600,
+        resultType: CameraResultType.Base64
+      })
+        .then(image => {
+          this.selectedImage = image.base64String;
+          this.imagePick.emit(image.base64String);
+          // console.log(image.webPath);
+        })
+        .catch(error => {
+          console.log(error);
+          if (this.usePicker) {
+            this.filePickerRef.nativeElement.click();
+          }
+          return false;
+        });
+    }
   }
   onFileChosen(event: Event) {
-    //console.log(event);
+    // console.log(event);
     const pickedFile = (event.target as HTMLInputElement).files[0];
-    if(!pickedFile) {
+    if (!pickedFile) {
       return;
     }
     const fr = new FileReader();

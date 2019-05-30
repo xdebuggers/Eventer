@@ -19,13 +19,13 @@ interface EventData {
   location: EventLocation;
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class EventsService {
   constructor(private loginService: LoginService, private http: HttpClient) {}
 
+// tslint:disable-next-line: variable-name
   private _events = new BehaviorSubject<Event[]>([]);
   fireBaseURL = 'https://eventer-app-xdebuggers.firebaseio.com';
 
@@ -33,92 +33,103 @@ export class EventsService {
     return this._events.asObservable();
   }
 
-  deleteEvents(id: string){
-    this.http.delete(this.fireBaseURL + '/my-events/' + id + '.json').subscribe();
-
+  deleteEvents(id: string) {
+    this.http
+      .delete(this.fireBaseURL + '/my-events/' + id + '.json')
+      .subscribe();
   }
-  
 
   fetchEvents() {
-    return this.loginService.token.pipe(take(1), switchMap(token => {
-      //console.log(this.fireBaseURL + `/my-events.json?auth=${token}`);
-      return this.http
-      .get<{ [key: string]: EventData }>(this.fireBaseURL + `/my-events.json?auth=${token}`)
-    }),
+    return this.loginService.token.pipe(
+      take(1),
+      switchMap(token => {
+        // console.log(this.fireBaseURL + `/my-events.json?auth=${token}`);
+        return this.http.get<{ [key: string]: EventData }>(
+          this.fireBaseURL + `/my-events.json?auth=${token}`
+        );
+      }),
       map(resData => {
-          const events = [];
-          for (const key in resData) {
-            if (resData.hasOwnProperty(key)) {
-              events.push(
-                new Event(
-                  key,
-                  resData[key].name,
-                  resData[key].desc,
-                  resData[key].imgUrl,
-                  resData[key].capacity,
-                  new Date(resData[key].date),
-                  resData[key].goingCount,
-                  resData[key].interestedCount,
-                  resData[key].userId,
-                  resData[key].location
-                )
-              );
-            }
+        const events = [];
+        for (const key in resData) {
+          if (resData.hasOwnProperty(key)) {
+            events.push(
+              new Event(
+                key,
+                resData[key].name,
+                resData[key].desc,
+                resData[key].imgUrl,
+                resData[key].capacity,
+                new Date(resData[key].date),
+                resData[key].goingCount,
+                resData[key].interestedCount,
+                resData[key].userId,
+                resData[key].location
+              )
+            );
           }
-          return events;
-        }),
-        tap(events => {
-          this._events.next(events);
-        })
-      );
+        }
+        return events;
+      }),
+      tap(events => {
+        this._events.next(events);
+      })
+    );
   }
 
   fetchMyEvents() {
     let fetchedUserId: string;
-    return this.loginService.userId.pipe(take(1), switchMap(userId => {
-      if (!userId) {
-        throw new Error('User not found');
-      }
-      fetchedUserId = userId;
-      return this.loginService.token;
-    }), take(1), switchMap(token => {
-      return this.http.get<{ [key: string]: EventData }>
-    (this.fireBaseURL + `/my-events.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`
-    );
-    }),
+    return this.loginService.userId.pipe(
+      take(1),
+      switchMap(userId => {
+        if (!userId) {
+          throw new Error('User not found');
+        }
+        fetchedUserId = userId;
+        return this.loginService.token;
+      }),
+      take(1),
+      switchMap(token => {
+        return this.http.get<{ [key: string]: EventData }>(
+          this.fireBaseURL +
+            `/my-events.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`
+        );
+      }),
       map(resData => {
-          const events = [];
-          for (const key in resData) {
-            if (resData.hasOwnProperty(key)) {
-              events.push(
-                new Event(
-                  key,
-                  resData[key].name,
-                  resData[key].desc,
-                  resData[key].imgUrl,
-                  resData[key].capacity,
-                  new Date(resData[key].date),
-                  resData[key].goingCount,
-                  resData[key].interestedCount,
-                  resData[key].userId,
-                  resData[key].location
-                )
-              );
-            }
+        const events = [];
+        for (const key in resData) {
+          if (resData.hasOwnProperty(key)) {
+            events.push(
+              new Event(
+                key,
+                resData[key].name,
+                resData[key].desc,
+                resData[key].imgUrl,
+                resData[key].capacity,
+                new Date(resData[key].date),
+                resData[key].goingCount,
+                resData[key].interestedCount,
+                resData[key].userId,
+                resData[key].location
+              )
+            );
           }
-          return events;
-        }),
-        tap(events => {
-          this._events.next(events);
-        })
-      );
+        }
+        return events;
+      }),
+      tap(events => {
+        this._events.next(events);
+      })
+    );
   }
 
-
   getEvent(id: string) {
-    return this.loginService.token.pipe(take(1), switchMap(token => {
-      return this.http.get<EventData>(this.fireBaseURL + `/my-events/${id}.json?auth=${token}`);
-    }),
+    return this.loginService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.get<EventData>(
+          this.fireBaseURL + `/my-events/${id}.json?auth=${token}`
+        );
+      }),
       map(eventData => {
         return new Event(
           id,
@@ -139,64 +150,83 @@ export class EventsService {
   uploadImage(image: File) {
     const uploadData = new FormData();
     uploadData.append('image', image);
-    return this.loginService.token.pipe(take(1), switchMap(token => {
-      return this.http
-    .post<{imageUrl: string, imagePath: string}>
-    ('https://us-central1-eventer-app-xdebuggers.cloudfunctions.net/storeImage',
-    uploadData, { headers: { Authorization: 'Bearer ' + token } });
-    }));
+    return this.loginService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<{ imageUrl: string; imagePath: string }>(
+          'https://us-central1-eventer-app-xdebuggers.cloudfunctions.net/storeImage',
+          uploadData,
+          { headers: { Authorization: 'Bearer ' + token } }
+        );
+      })
+    );
   }
 
-  addEvent(name: string, desc: string, capacity: number, date: Date, location: EventLocation, imageUrl: string) {
+  addEvent(
+    name: string,
+    desc: string,
+    capacity: number,
+    date: Date,
+    location: EventLocation,
+    imageUrl: string
+  ) {
     let generatedId: string;
     let newEvent: Event;
     let fetchedUserId;
-    return this.loginService.userId.pipe(take(1), switchMap(userId => {
-      fetchedUserId = userId;
-      return this.loginService.token;
-    }) , take(1), switchMap(token => {
-      if (!fetchedUserId) {
-        throw new Error('no user found');
-      }
+    return this.loginService.userId.pipe(
+      take(1),
+      switchMap(userId => {
+        fetchedUserId = userId;
+        return this.loginService.token;
+      }),
+      take(1),
+      switchMap(token => {
+        if (!fetchedUserId) {
+          throw new Error('no user found');
+        }
 
-      newEvent = new Event(
-        Math.random().toString(),
-        name,
-        desc,
-        imageUrl,
-        capacity,
-        date,
-        0,
-        0,
-        fetchedUserId,
-        location
-      );
-      // need to look again!!!!!
-      return this.http
-        .post<{ name: string }>(this.fireBaseURL + `/my-events.json?auth=${token}`, { ...newEvent, id: null })
-
-    }), switchMap(resData => {
-          generatedId = resData.name;
-          return this.events;
-        }),
-        take(1),
-        tap(events => {
-          newEvent.id = generatedId;
-          this._events.next(events.concat(newEvent));
-        })
-      );
+        newEvent = new Event(
+          Math.random().toString(),
+          name,
+          desc,
+          imageUrl,
+          capacity,
+          date,
+          0,
+          0,
+          fetchedUserId,
+          location
+        );
+        // need to look again!!!!!
+        return this.http.post<{ name: string }>(
+          this.fireBaseURL + `/my-events.json?auth=${token}`,
+          { ...newEvent, id: null }
+        );
+      }),
+      switchMap(resData => {
+        generatedId = resData.name;
+        return this.events;
+      }),
+      take(1),
+      tap(events => {
+        newEvent.id = generatedId;
+        this._events.next(events.concat(newEvent));
+      })
+    );
   }
 
   updateEvent(eventId: string, name: string, desc: string) {
     let updatedEvents: Event[];
     let fetchedToken;
-    return this.loginService.token.pipe(take(1), switchMap(token => {
-      fetchedToken = token;
-      return this.events;
-    }),
+    return this.loginService.token.pipe(
+      take(1),
+      switchMap(token => {
+        fetchedToken = token;
+        return this.events;
+      }),
       take(1),
       switchMap(events => {
-        if (!events || events.length <= 0){
+        if (!events || events.length <= 0) {
           return this.fetchEvents();
         } else {
           return of(events);
@@ -232,13 +262,15 @@ export class EventsService {
   updateEventCounts(eventId: string, type: string) {
     let updatedEvents: Event[];
     let fetchedToken;
-    return this.loginService.token.pipe(take(1), switchMap(token => {
-      fetchedToken = token;
-      return this.events;
-    }),
+    return this.loginService.token.pipe(
+      take(1),
+      switchMap(token => {
+        fetchedToken = token;
+        return this.events;
+      }),
       take(1),
       switchMap(events => {
-        if (!events || events.length <= 0){
+        if (!events || events.length <= 0) {
           return this.fetchEvents();
         } else {
           return of(events);
@@ -250,7 +282,7 @@ export class EventsService {
         const oldEvent = updatedEvents[updatedEventIndex];
         if (type === 'Going') {
           oldEvent.goingCount++;
-          //console.log(oldEvent.goingCount);
+          // console.log(oldEvent.goingCount);
         } else {
           oldEvent.interestedCount++;
         }
@@ -278,17 +310,22 @@ export class EventsService {
   }
 
   deleteEvent(eventId: string) {
-    return this.loginService.token.pipe(take(1), switchMap(token => {
-      return this.http.delete(this.fireBaseURL + `/my-events/${eventId}.json?auth=${token}`);
-    }), switchMap(() => {
-      return this.events;
-    }),
-    take(1),
-    tap(events => {
-      this._events.next(events.filter(e => e.id !== eventId));
-    }));
+    return this.loginService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.delete(
+          this.fireBaseURL + `/my-events/${eventId}.json?auth=${token}`
+        );
+      }),
+      switchMap(() => {
+        return this.events;
+      }),
+      take(1),
+      tap(events => {
+        this._events.next(events.filter(e => e.id !== eventId));
+      })
+    );
   }
-
 }
 
 /*new Event('e1',

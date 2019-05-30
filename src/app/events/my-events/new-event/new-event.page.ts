@@ -27,59 +27,59 @@ function base64toBlob(base64Data, contentType) {
   return new Blob(byteArrays, { type: contentType });
 }
 
-
 @Component({
   selector: 'app-new-event',
   templateUrl: './new-event.page.html',
-  styleUrls: ['./new-event.page.scss'],
+  styleUrls: ['./new-event.page.scss']
 })
 export class NewEventPage implements OnInit {
-
   form: FormGroup;
   constructor(
     private eventsService: EventsService,
     private router: Router,
     private loadingCtrl: LoadingController
-    ) { }
+  ) {}
 
-  ngOnInit() { 
+  ngOnInit() {
     this.form = new FormGroup({
-      name: new FormControl(null,{
+      name: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required]
       }),
-      desc: new FormControl (null,{
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(255)]
-        }),
-      capacity: new FormControl(null,{
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.min(1)]
-        }),
-      date: new FormControl(null,{
-          updateOn: 'blur',
-          validators: [Validators.required]
-        }),
-      time: new FormControl(null,{
-          updateOn: 'blur',
-          validators: [Validators.required]
-        }),
-        location: new FormControl(null, {
-          validators: [Validators.required]
-        }),
-        image: new FormControl(null)
-
+      desc: new FormControl(null, {
+        updateOn: 'blur',
+        validators: [Validators.required, Validators.maxLength(255)]
+      }),
+      capacity: new FormControl(null, {
+        updateOn: 'blur',
+        validators: [Validators.required, Validators.min(1)]
+      }),
+      date: new FormControl(null, {
+        updateOn: 'blur',
+        validators: [Validators.required]
+      }),
+      time: new FormControl(null, {
+        updateOn: 'blur',
+        validators: [Validators.required]
+      }),
+      location: new FormControl(null, {
+        validators: [Validators.required]
+      }),
+      image: new FormControl(null)
     });
   }
   onLocationPicked(location: EventLocation) {
-    this.form.patchValue({ location: location });
+    this.form.patchValue({ location });
   }
 
-  onImagePicked(ImageData: string | File ) {
+  onImagePicked(ImageData: string | File) {
     let imageFile;
     if (typeof ImageData === 'string') {
       try {
-        imageFile = base64toBlob(ImageData.replace('data:image/jpeg;base64,', ''), 'image/jpeg');
+        imageFile = base64toBlob(
+          ImageData.replace('data:image/jpeg;base64,', ''),
+          'image/jpeg'
+        );
       } catch (error) {
         console.log(error);
         return;
@@ -87,38 +87,42 @@ export class NewEventPage implements OnInit {
     } else {
       imageFile = ImageData;
     }
-    this.form.patchValue({image: imageFile});
+    this.form.patchValue({ image: imageFile });
   }
 
   onCreateEvent() {
-    if (!this.form.valid  || !this.form.get('image').value) {
+    if (!this.form.valid || !this.form.get('image').value) {
       return;
     }
-    //console.log(this.form.value);
-    this.loadingCtrl.create({
-      message: 'Creating Event...'
-    }).then(loadingEl => {
-      loadingEl.present();
-      this.eventsService.uploadImage(this.form.get('image').value).pipe(switchMap(uploadRes => {
-        const date = new Date (this.form.value.date);
-        const time = new Date (this.form.value.time);
-        const s = date.toDateString() + ' ' + time.toLocaleTimeString();
-        return this.eventsService.addEvent(
-        this.form.value.name,
-        this.form.value.desc,
-        this.form.value.capacity,
-        new Date(s),
-        this.form.value.location,
-        uploadRes.imageUrl
-        );
+    // console.log(this.form.value);
+    this.loadingCtrl
+      .create({
+        message: 'Creating Event...'
       })
-      ).subscribe(() => {
-        loadingEl.dismiss();
-        this.form.reset();
-        this.router.navigate(['/events/tabs/my-events']);
+      .then(loadingEl => {
+        loadingEl.present();
+        this.eventsService
+          .uploadImage(this.form.get('image').value)
+          .pipe(
+            switchMap(uploadRes => {
+              const date = new Date(this.form.value.date);
+              const time = new Date(this.form.value.time);
+              const s = date.toDateString() + ' ' + time.toLocaleTimeString();
+              return this.eventsService.addEvent(
+                this.form.value.name,
+                this.form.value.desc,
+                this.form.value.capacity,
+                new Date(s),
+                this.form.value.location,
+                uploadRes.imageUrl
+              );
+            })
+          )
+          .subscribe(() => {
+            loadingEl.dismiss();
+            this.form.reset();
+            this.router.navigate(['/events/tabs/my-events']);
+          });
       });
-    });
   }
-
-
 }

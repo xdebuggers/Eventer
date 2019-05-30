@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>My Events</ion-title>
     <ion-buttons slot="primary">
-      <ion-button routerLink="/events/tabs/my-events/new" >
+      <ion-button routerLink="/events/tabs/my-events/new">
         <ion-icon name="add" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -13,27 +13,32 @@
 </ion-header>
 
 <ion-content padding>
-    <ion-row>
-        <ion-col size="12" size-sm="8" offset-sm="2">
-          <div  *ngIf="isLoading" text-center>
-              <ion-spinner color="primary"></ion-spinner>
-          </div>
-          <div text-center *ngIf="!isLoading && myEvents.length <= 0">
-              <p>
-                  You have not created any events yet! Create one NOW! 
-                </p>
-                <ion-button color="primary" routerLink="/events/tabs/my-events/new">Create New Event</ion-button>
-          </div>
-          <ion-list *ngIf="!isLoading && myEvents.length > 0">
-            <ion-item-sliding *ngFor="let myevent of myEvents" #slidingItem>
-                  <app-event-item [event]="myevent"></app-event-item>
-                <ion-item-options>
-                  <ion-item-option color="secondary" (click)="onEdit(myevent.id, slidingItem)">
-                    <ion-icon name="create" slot="icon-only"></ion-icon>
-                  </ion-item-option>
-                </ion-item-options>
-            </ion-item-sliding>
-          </ion-list>
-        </ion-col>
-      </ion-row>
+  <ion-row>
+    <ion-col size="12" size-sm="8" offset-sm="2">
+      <div *ngIf="isLoading" text-center>
+        <ion-spinner color="primary"></ion-spinner>
+      </div>
+      <div text-center *ngIf="!isLoading && myEvents.length <= 0">
+        <p>
+          You have not created any events yet! Create one NOW!
+        </p>
+        <ion-button color="primary" routerLink="/events/tabs/my-events/new"
+          >Create New Event</ion-button
+        >
+      </div>
+      <ion-list *ngIf="!isLoading && myEvents.length > 0">
+        <ion-item-sliding *ngFor="let myevent of myEvents" #slidingItem>
+          <app-event-item [event]="myevent"></app-event-item>
+          <ion-item-options>
+            <ion-item-option
+              color="secondary"
+              (click)="onEdit(myevent.id, slidingItem)"
+            >
+              <ion-icon name="create" slot="icon-only"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </ion-col>
+  </ion-row>
 </ion-content>

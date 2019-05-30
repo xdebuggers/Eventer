@@ -20,7 +20,7 @@ export class MapModalComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('map') mapElementRef: ElementRef;
   clickListener: any;
   googleMaps: any;
-  @Input() center = { lat: -34.397, lng: 150.644 };
+  @Input() center = { lat: 41.007381, lng: 28.977158 };
   @Input() selectable = true;
   @Input() closeBtnText = 'Cancel';
   @Input() title = 'Pick Location';

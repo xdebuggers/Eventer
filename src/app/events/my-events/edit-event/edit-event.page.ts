@@ -2,11 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Event } from '../../event.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventsService } from '../../events.service';
-import { NavController, LoadingController, AlertController } from '@ionic/angular';
+import {
+  NavController,
+  LoadingController,
+  AlertController
+} from '@ionic/angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Button } from 'protractor';
-import { ok } from 'assert';
 
 @Component({
   selector: 'app-edit-event',
@@ -39,30 +41,39 @@ export class EditEventPage implements OnInit, OnDestroy {
       this.isLoading = true;
       this.eventSub = this.eventsService
         .getEvent(paramMap.get('eventId'))
-        .subscribe(event => {
-          this.event = event;
-          this.form = new FormGroup({
-            name: new FormControl(this.event.name, {
-              updateOn: 'blur',
-              validators: [Validators.required]
-            }),
-            desc: new FormControl(this.event.desc, {
-              updateOn: 'blur',
-              validators: [Validators.required, Validators.maxLength(255)]
-            })
-          });
-          this.isLoading = false;
-        }, error => {
-          this.alertCtrl.create({
-            header: 'Ooops!',
-            message: 'Event could not found, Please try again later',
-            buttons: [{text: 'OK', handler: () => {
-              this.router.navigate(['/events/tabs/my-events']);
-            }}]
-          }).then(alertEl => {
-            alertEl.present();
-          });
-        }
+        .subscribe(
+          event => {
+            this.event = event;
+            this.form = new FormGroup({
+              name: new FormControl(this.event.name, {
+                updateOn: 'blur',
+                validators: [Validators.required]
+              }),
+              desc: new FormControl(this.event.desc, {
+                updateOn: 'blur',
+                validators: [Validators.required, Validators.maxLength(255)]
+              })
+            });
+            this.isLoading = false;
+          },
+          error => {
+            this.alertCtrl
+              .create({
+                header: 'Ooops!',
+                message: 'Event could not found, Please try again later',
+                buttons: [
+                  {
+                    text: 'OK',
+                    handler: () => {
+                      this.router.navigate(['/events/tabs/my-events']);
+                    }
+                  }
+                ]
+              })
+              .then(alertEl => {
+                alertEl.present();
+              });
+          }
         );
     });
   }

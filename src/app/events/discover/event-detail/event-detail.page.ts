@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   NavController,
   ModalController,
@@ -17,18 +17,18 @@ import { MapModalComponent } from '../../../shared/map-modal/map-modal.component
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: "app-event-detail",
-  templateUrl: "./event-detail.page.html",
-  styleUrls: ["./event-detail.page.scss"]
+  selector: 'app-event-detail',
+  templateUrl: './event-detail.page.html',
+  styleUrls: ['./event-detail.page.scss']
 })
 export class EventDetailPage implements OnInit, OnDestroy {
   event: Event;
-  
+
   isJoinable = false;
   isLoading = false;
   private eventSub: Subscription;
   private updateSub: Subscription;
-  
+
   constructor(
     private navCtrl: NavController,
     private route: ActivatedRoute,
@@ -51,25 +51,41 @@ export class EventDetailPage implements OnInit, OnDestroy {
       }
       this.isLoading = true;
       let fetchedUserId: string;
-      this.loginService.userId.pipe(switchMap(userId => {
-        if (!userId) {
-          throw new Error('Found no user');
-        }
-        fetchedUserId = userId;
-        return this.eventsService.getEvent(paramMap.get('eventId'));
-
-      })).subscribe(event => {
-        this.event = event;
-        this.isJoinable = event.userId !== fetchedUserId;
-        this.isLoading = false;
-      }, error => {
-        this.alertCtrl.create({header: 'Ooops', message: 'Could not load the event', buttons: [{text: 'OK', handler: () => {
-          this.router.navigate(['/events/tabs/discover']);
-        }}]}).then(alertEl => {
-          alertEl.present();
-        });
-
-      });
+      this.loginService.userId
+        .pipe(
+          switchMap(userId => {
+            if (!userId) {
+              throw new Error('Found no user');
+            }
+            fetchedUserId = userId;
+            return this.eventsService.getEvent(paramMap.get('eventId'));
+          })
+        )
+        .subscribe(
+          event => {
+            this.event = event;
+            this.isJoinable = event.userId !== fetchedUserId;
+            this.isLoading = false;
+          },
+          error => {
+            this.alertCtrl
+              .create({
+                header: 'Ooops',
+                message: 'Could not load the event',
+                buttons: [
+                  {
+                    text: 'OK',
+                    handler: () => {
+                      this.router.navigate(['/events/tabs/discover']);
+                    }
+                  }
+                ]
+              })
+              .then(alertEl => {
+                alertEl.present();
+              });
+          }
+        );
     });
   }
   ngOnDestroy() {
@@ -109,7 +125,7 @@ export class EventDetailPage implements OnInit, OnDestroy {
       });
   }
   openJoinEventModal(mode: 'going' | 'interested') {
-    //console.log(mode);
+    // console.log(mode);
     this.modalCtrl
       .create({
         component: JoinEventComponent,
@@ -120,42 +136,52 @@ export class EventDetailPage implements OnInit, OnDestroy {
         return modalEl.onDidDismiss();
       })
       .then(resaultData => {
-        //console.log(resaultData.data, resaultData.role);
+        // console.log(resaultData.data, resaultData.role);
         if (resaultData.role === 'confirm') {
-          this.loadingCtrl.create({
-            message: 'Joining Event...'
-          }).then(loadingEl => {
-            loadingEl.present();
-            const data = resaultData.data.joinData;
-            this.updateSub = this.eventService
-          .updateEventCounts(
-            this.event.id,
-            data.type
-          ).subscribe(() => {
-            this.joinedEventsService.joinEvent(
-              this.event.id,
-              this.event.name,
-              this.event.imgUrl,
-              data.firstName,
-              data.lastName,
-              data.comment,
-              data.type
-              ).subscribe(() => {
-                loadingEl.dismiss();
-              });
-          });
-          });
+          this.loadingCtrl
+            .create({
+              message: 'Joining Event...'
+            })
+            .then(loadingEl => {
+              loadingEl.present();
+              const data = resaultData.data.joinData;
+              this.updateSub = this.eventService
+                .updateEventCounts(this.event.id, data.type)
+                .subscribe(() => {
+                  this.joinedEventsService
+                    .joinEvent(
+                      this.event.id,
+                      this.event.name,
+                      this.event.imgUrl,
+                      data.firstName,
+                      data.lastName,
+                      data.comment,
+                      data.type
+                    )
+                    .subscribe(() => {
+                      loadingEl.dismiss();
+                    });
+                });
+            });
         }
       });
   }
   onShowFullMap() {
-    this.modalCtrl.create({component: MapModalComponent, componentProps: {
-      center: {lat: this.event.location.lat, lng: this.event.location.lng},
-      selectable: false,
-      closeBtnText: 'Close',
-      title: this.event.location.address
-    }}).then(modalEl => {
-      modalEl.present();
-    });
+    this.modalCtrl
+      .create({
+        component: MapModalComponent,
+        componentProps: {
+          center: {
+            lat: this.event.location.lat,
+            lng: this.event.location.lng
+          },
+          selectable: false,
+          closeBtnText: 'Close',
+          title: this.event.location.address
+        }
+      })
+      .then(modalEl => {
+        modalEl.present();
+      });
   }
 }

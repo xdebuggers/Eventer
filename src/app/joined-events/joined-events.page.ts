@@ -7,19 +7,23 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-joined-events',
   templateUrl: './joined-events.page.html',
-  styleUrls: ['./joined-events.page.scss'],
+  styleUrls: ['./joined-events.page.scss']
 })
 export class JoinedEventsPage implements OnInit, OnDestroy {
-
   loadedJoinedEvents: JoindEvent[];
   isLoading = false;
   private joinedEventsSub: Subscription;
-  constructor(private joinedEventsService: JoinedEventsService, private loadingCtrl: LoadingController) { }
+  constructor(
+    private joinedEventsService: JoinedEventsService,
+    private loadingCtrl: LoadingController
+  ) {}
 
   ngOnInit() {
-    this.joinedEventsSub = this.joinedEventsService.joinedEvents.subscribe(joinedEvents => {
-      this.loadedJoinedEvents = joinedEvents;
-    });
+    this.joinedEventsSub = this.joinedEventsService.joinedEvents.subscribe(
+      joinedEvents => {
+        this.loadedJoinedEvents = joinedEvents;
+      }
+    );
   }
 
   ionViewWillEnter() {
@@ -31,19 +35,22 @@ export class JoinedEventsPage implements OnInit, OnDestroy {
 
   onUnjoinEvent(joinedEvenetId: string, slidingJevent: IonItemSliding) {
     slidingJevent.close();
-    this.loadingCtrl.create({
-      message: 'Caneling your joined event...'
-    }).then(loadingEl => {
-      loadingEl.present();
-      this.joinedEventsService.cancelJoinEvent(joinedEvenetId).subscribe(() => {
-        loadingEl.dismiss();
+    this.loadingCtrl
+      .create({
+        message: 'Caneling your joined event...'
+      })
+      .then(loadingEl => {
+        loadingEl.present();
+        this.joinedEventsService
+          .cancelJoinEvent(joinedEvenetId)
+          .subscribe(() => {
+            loadingEl.dismiss();
+          });
       });
-    });
   }
   ngOnDestroy() {
     if (this.joinedEventsSub) {
       this.joinedEventsSub.unsubscribe();
     }
   }
-
 }

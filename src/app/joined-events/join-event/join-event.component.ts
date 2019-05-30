@@ -6,19 +6,15 @@ import { NgForm } from '@angular/forms';
 @Component({
   selector: 'app-join-event',
   templateUrl: './join-event.component.html',
-  styleUrls: ['./join-event.component.scss'],
+  styleUrls: ['./join-event.component.scss']
 })
 export class JoinEventComponent implements OnInit {
-
   @Input() selectedEvent: Event;
   @Input() selectedMode: 'going' | 'interested';
   @ViewChild('f') form: NgForm;
-  constructor(private modalCtrl: ModalController) { }
+  constructor(private modalCtrl: ModalController) {}
 
-  ngOnInit() {
-
-
-  }
+  ngOnInit() {}
 
   onCancel() {
     this.modalCtrl.dismiss(null, 'cancel');
@@ -28,21 +24,30 @@ export class JoinEventComponent implements OnInit {
     if (!this.form.valid) {
       return;
     }
-    if (this.selectedMode === 'going'){
-      this.modalCtrl.dismiss({joinData: {
-        firstName: this.form.value['first-name'],
-        lastName: this.form.value['last-name'],
-        comment: this.form.value.comment,
-        type: 'Going'
-      } }, 'confirm');
-
+    if (this.selectedMode === 'going') {
+      this.modalCtrl.dismiss(
+        {
+          joinData: {
+            firstName: this.form.value['first-name'],
+            lastName: this.form.value['last-name'],
+            comment: this.form.value.comment,
+            type: 'Going'
+          }
+        },
+        'confirm'
+      );
     } else {
-      this.modalCtrl.dismiss({joinData: {
-        firstName: this.form.value['first-name'],
-        lastName: this.form.value['last-name'],
-        comment: this.form.value.comment,
-        type: 'Interested'
-      } }, 'confirm');
+      this.modalCtrl.dismiss(
+        {
+          joinData: {
+            firstName: this.form.value['first-name'],
+            lastName: this.form.value['last-name'],
+            comment: this.form.value.comment,
+            type: 'Interested'
+          }
+        },
+        'confirm'
+      );
     }
   }
 }

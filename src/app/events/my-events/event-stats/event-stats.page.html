@@ -6,12 +6,11 @@
     <ion-title>{{ isLoading ? "Loading.." : event.name }}</ion-title>
     <ion-buttons slot="primary">
       <ion-button (click)="onDeleteEvent(event.id)">
-        <ion-icon name="trash" color="danger" slot="icon-only"></ion-icon>
+        <ion-icon name="trash" color="secondary" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 <ion-content>
   <div *ngIf="isLoading" text-center>
     <ion-spinner color="primary"></ion-spinner>
@@ -25,7 +24,10 @@
     <ion-row>
       <ion-col size-sm="6" offset-sm="3" text-center padding>
         <ion-item>
-          <ion-label text-wrap> <h2>Description: </h2> {{ event.desc }} </ion-label>
+          <ion-label text-wrap>
+            <h2>Description:</h2>
+            {{ event.desc }}
+          </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>Capacity: {{ event.capacity }}</ion-label>
@@ -52,7 +54,7 @@
         ></ion-img>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="joinedEventComments.length > 0">
       <ion-col size-sm="6" offset-sm="3" text-center no-padding>
         <ion-card>
           <ion-card-title padding text-left

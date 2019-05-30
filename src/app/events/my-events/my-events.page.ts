@@ -8,13 +8,13 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-my-events',
   templateUrl: './my-events.page.html',
-  styleUrls: ['./my-events.page.scss'],
+  styleUrls: ['./my-events.page.scss']
 })
-export class MyEventsPage implements OnInit , OnDestroy{
+export class MyEventsPage implements OnInit, OnDestroy {
   myEvents: Event[];
   eventsSub: Subscription;
   isLoading = false;
-  constructor(private eventsService: EventsService, private router: Router) { }
+  constructor(private eventsService: EventsService, private router: Router) {}
 
   ngOnInit() {
     this.eventsSub = this.eventsService.events.subscribe(events => {
@@ -39,5 +39,4 @@ export class MyEventsPage implements OnInit , OnDestroy{
     this.router.navigate(['/', 'events', 'tabs', 'my-events', 'edit', eventId]);
     console.log('Editing item', eventId);
   }
-
 }
