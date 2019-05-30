@@ -14,7 +14,8 @@ const routes: Routes = [
     path: 'joined-events',
     loadChildren: './joined-events/joined-events.module#JoinedEventsPageModule',
     canLoad: [LoginGuard]
-  },
+  },  { path: 'about', loadChildren: './about/about.module#AboutPageModule' },
+
 ];
 
 @NgModule({
