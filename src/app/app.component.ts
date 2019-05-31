@@ -51,5 +51,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   onLogout() {
     this.loginServise.logout();
+    this.isAdmin = false;
   }
 }
