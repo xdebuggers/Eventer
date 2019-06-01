@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
 import { JoinedEventsService } from './../../../joined-events/joined-events.service';
 import { LoginService } from './../../../login/login.service';
 import { MapModalComponent } from '../../../shared/map-modal/map-modal.component';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-event-detail',
@@ -52,7 +52,7 @@ export class EventDetailPage implements OnInit, OnDestroy {
       this.isLoading = true;
       let fetchedUserId: string;
       this.loginService.userId
-        .pipe(
+        .pipe(take(1),
           switchMap(userId => {
             if (!userId) {
               throw new Error('Found no user');

@@ -9,7 +9,7 @@ import {
 import { EventsService } from '../../events.service';
 import { Subscription } from 'rxjs';
 import { LoginService } from 'src/app/login/login.service';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { JoinedEventComments } from './../../../joined-events/joined-event.model';
 import { JoinedEventsService } from './../../../joined-events/joined-events.service';
 
@@ -46,7 +46,7 @@ export class EventStatsPage implements OnInit, OnDestroy {
       this.isLoading = true;
       let fetchedUserId: string;
       this.loginService.userId
-        .pipe(
+        .pipe(take(1),
           switchMap(userId => {
             if (!userId) {
               throw new Error('Found no user');
