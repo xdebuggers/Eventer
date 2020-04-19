@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  googleMapsAPIKey: "your_api",
-  fireBaseAPIKey: "your_api",
+  googleMapsAPIKey: "AIzaSyAlq_pwb-kfuBrOQbD68Gt6De61NPx7zD8",
+  fireBaseAPIKey: "AIzaSyAlq_pwb-kfuBrOQbD68Gt6De61NPx7zD8",
 };
 
 /*
